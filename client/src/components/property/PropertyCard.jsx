@@ -7,7 +7,7 @@ export default function PropertyCard({ property, index, onPreview, onLead }) {
   return (
     <article className="property-card" style={{ '--delay': `${index * 70}ms` }}>
       <button className="image-button" onClick={() => onPreview(property)} aria-label={`Preview ${property.title}`}>
-        <img src={property.image} alt={property.title} loading="lazy" />
+        <img src={property.image} alt={`${property.title} in ${property.location}`} loading="lazy" />
         <span>{property.score}% local fit</span>
       </button>
       <div className="property-body">

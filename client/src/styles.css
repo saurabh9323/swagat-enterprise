@@ -263,6 +263,7 @@ p {
 }
 
 .hero-copy h2,
+.section-title h1,
 .section-title h2,
 .office-band h2 {
   margin-bottom: 16px;
@@ -615,6 +616,7 @@ p {
   margin-bottom: 22px;
 }
 
+.section-title h1,
 .section-title h2 {
   max-width: 680px;
   margin-bottom: 0;
@@ -1291,6 +1293,20 @@ p {
   margin-bottom: 18px;
 }
 
+.breadcrumbs {
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #65716b;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.breadcrumbs a {
+  color: #12362b;
+}
+
 .detail-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.04fr) minmax(320px, 0.96fr);
@@ -1374,7 +1390,7 @@ p {
 }
 
 .detail-actions {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .detail-actions a:first-child,
@@ -1524,9 +1540,17 @@ p {
   padding: 18px 0 0;
   border-top: 1px solid rgba(23, 24, 23, 0.12);
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   color: #65716b;
+}
+
+.public-footer nav {
+  display: flex;
+  gap: 14px;
+  color: #12362b;
+  font-weight: 900;
 }
 
 .public-footer span {
@@ -2022,6 +2046,7 @@ p {
 
   .public-footer {
     flex-direction: column;
+    align-items: flex-start;
   }
 
   .public-footer span {

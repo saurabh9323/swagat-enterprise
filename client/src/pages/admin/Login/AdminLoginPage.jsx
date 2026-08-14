@@ -2,6 +2,7 @@ import React from 'react';
 import { ArrowRight, KeyRound, ShieldCheck } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LogoLockup from '../../../components/common/LogoLockup.jsx';
+import NoIndex from '../../../components/seo/NoIndex.jsx';
 import { unlockAdmin } from '../../../utils/adminAuth.js';
 
 export default function AdminLoginPage() {
@@ -24,6 +25,7 @@ export default function AdminLoginPage() {
 
   return (
     <main className="admin-login">
+      <NoIndex title="Admin Login | Swagat Enterprise" />
       <LogoLockup href="/" />
       <section className="panel admin-login-card">
         <KeyRound size={28} />

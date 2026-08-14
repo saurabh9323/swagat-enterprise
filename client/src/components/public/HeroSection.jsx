@@ -60,7 +60,7 @@ export default function HeroSection({ selectedProperty }) {
           <span>Focus area</span>
           <strong>Nalasopara</strong>
         </div>
-        <img src={selectedProperty.image} alt={selectedProperty.title} />
+        <img src={selectedProperty.image} alt={`${selectedProperty.title} in ${selectedProperty.location}`} loading="eager" />
         <div className="glass-ticket">
           <span>{selectedProperty.status}</span>
           <strong>{selectedProperty.title}</strong>

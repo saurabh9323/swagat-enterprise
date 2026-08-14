@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import AdminHeader from '../components/admin/AdminHeader.jsx';
 import AdminSidebar from '../components/layout/AdminSidebar.jsx';
+import NoIndex from '../components/seo/NoIndex.jsx';
 
 const titles = {
   '/admin': 'Today at Swagat Enterprise',
@@ -18,6 +19,7 @@ export default function AdminLayout({ onAddProperty }) {
 
   return (
     <main className="admin-app">
+      <NoIndex title={`${title} | Swagat Admin`} />
       <AdminSidebar />
       <section className="admin-content">
         <AdminHeader title={title} onAddProperty={onAddProperty} />

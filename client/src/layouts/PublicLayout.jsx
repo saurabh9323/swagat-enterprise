@@ -13,10 +13,12 @@ export default function PublicLayout() {
   }, [location.pathname]);
 
   return (
-    <main className="public-app">
+    <div className="public-app">
       <PublicNav />
-      <Outlet />
+      <main className="public-main">
+        <Outlet />
+      </main>
       <PublicFooter />
-    </main>
+    </div>
   );
 }
