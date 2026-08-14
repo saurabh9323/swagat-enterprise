@@ -1,0 +1,25 @@
+{
+  "name": "swagat-enterprise-real-estate",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MERN real estate listing and admin dashboard for Swagat Enterprise.",
+  "scripts": {
+    "dev": "concurrently \"npm:server\" \"npm:client\"",
+    "client": "npm --prefix client run dev",
+    "server": "npm --prefix server run dev",
+    "install:all": "npm install && npm --prefix client install && npm --prefix server install",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start"
+  },
+  "keywords": [
+    "mern",
+    "real-estate",
+    "crm",
+    "property-listings"
+  ],
+  "author": "Swagat Enterprise",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}

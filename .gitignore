@@ -1,0 +1,15 @@
+node_modules/
+client/node_modules/
+server/node_modules/
+work-npm-cache/
+
+.env
+server/.env
+client/.env
+
+client/dist/
+*.log
+*.pid
+
+.DS_Store
+Thumbs.db
