@@ -1,12 +1,13 @@
 import React from 'react';
-import { Settings } from 'lucide-react';
+import ThemeSettingsPanel from '../../../components/admin/ThemeSettingsPanel.jsx';
 
-export default function AdminSettingsPage() {
+export default function AdminSettingsPage({ theme, onThemeChange, onSaveTheme, onResetTheme }) {
   return (
-    <section className="panel admin-placeholder">
-      <Settings size={26} />
-      <h2>Settings</h2>
-      <p>Admin profile, business preferences and security settings will be implemented after authentication.</p>
-    </section>
+    <ThemeSettingsPanel
+      theme={theme}
+      onChange={onThemeChange}
+      onSave={onSaveTheme}
+      onReset={onResetTheme}
+    />
   );
 }

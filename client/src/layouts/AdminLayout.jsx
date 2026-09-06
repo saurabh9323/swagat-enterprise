@@ -13,7 +13,7 @@ const titles = {
   '/admin/settings': 'Admin settings',
 };
 
-export default function AdminLayout({ onAddProperty }) {
+export default function AdminLayout({ theme, onAddProperty, onToggleTheme, onSaveTheme }) {
   const location = useLocation();
   const title = titles[location.pathname] || (location.pathname.includes('/edit') ? 'Edit property reference' : 'Admin workspace');
 
@@ -22,7 +22,13 @@ export default function AdminLayout({ onAddProperty }) {
       <NoIndex title={`${title} | Swagat Admin`} />
       <AdminSidebar />
       <section className="admin-content">
-        <AdminHeader title={title} onAddProperty={onAddProperty} />
+        <AdminHeader
+          title={title}
+          theme={theme}
+          onAddProperty={onAddProperty}
+          onToggleTheme={onToggleTheme}
+          onSaveTheme={onSaveTheme}
+        />
         <Outlet />
       </section>
     </main>

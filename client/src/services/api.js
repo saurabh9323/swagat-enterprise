@@ -68,4 +68,6 @@ export const api = {
   createLead: (payload) => request('/leads', { method: 'POST', body: JSON.stringify(payload) }),
   getLeads: () => request('/leads'),
   updateLeadStatus: (id, status) => request(`/leads/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+  getTheme: () => request('/settings/theme'),
+  updateTheme: (payload) => request('/settings/theme', { method: 'PUT', body: JSON.stringify(payload) }),
 };

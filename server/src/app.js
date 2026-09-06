@@ -7,6 +7,7 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 import { authRouter } from './routes/authRoutes.js';
 import { leadRouter } from './routes/leadRoutes.js';
 import { propertyRouter } from './routes/propertyRoutes.js';
+import { settingsRouter } from './routes/settingsRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
 
 function corsOrigins() {
@@ -38,6 +39,7 @@ export function createApp() {
   app.use('/api/properties', propertyRouter);
   app.use('/api/leads', leadRouter);
   app.use('/api/users', userRouter);
+  app.use('/api/settings', settingsRouter);
 
   app.use(notFound);
   app.use(errorHandler);
