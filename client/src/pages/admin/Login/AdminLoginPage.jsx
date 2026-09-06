@@ -3,24 +3,33 @@ import { ArrowRight, KeyRound, ShieldCheck } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LogoLockup from '../../../components/common/LogoLockup.jsx';
 import NoIndex from '../../../components/seo/NoIndex.jsx';
-import { unlockAdmin } from '../../../utils/adminAuth.js';
+import { api, setAdminToken } from '../../../services/api.js';
+import { unlockAdminSession } from '../../../utils/adminAuth.js';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [pin, setPin] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
   const [error, setError] = React.useState('');
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const redirectTo = location.state?.from || '/admin';
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setIsSubmitting(true);
+    setError('');
 
-    if (!unlockAdmin(pin)) {
-      setError('Enter the owner PIN to open the admin desk.');
-      return;
+    try {
+      const result = await api.login({ email, password });
+      setAdminToken(result.token);
+      unlockAdminSession();
+      navigate(redirectTo, { replace: true });
+    } catch (apiError) {
+      setError(apiError.message || 'Unable to sign in.');
+    } finally {
+      setIsSubmitting(false);
     }
-
-    navigate(redirectTo, { replace: true });
   }
 
   return (
@@ -31,23 +40,36 @@ export default function AdminLoginPage() {
         <KeyRound size={28} />
         <span><ShieldCheck size={16} /> Owner access only</span>
         <h1>Admin desk login</h1>
-        <p>Use the owner PIN to manage listings, leads and follow-ups.</p>
+        <p>Use your admin email and password to manage listings, leads and follow-ups.</p>
         <form onSubmit={handleSubmit}>
-          <label htmlFor="admin-pin">Owner PIN</label>
+          <label htmlFor="admin-email">Email</label>
           <input
-            id="admin-pin"
-            type="password"
-            inputMode="numeric"
-            autoComplete="current-password"
-            placeholder="Enter PIN"
-            value={pin}
+            id="admin-email"
+            type="email"
+            autoComplete="username"
+            placeholder="satish.pathak52@gmail.com"
+            value={email}
             onChange={(event) => {
-              setPin(event.target.value);
+              setEmail(event.target.value);
+              setError('');
+            }}
+          />
+          <label htmlFor="admin-password">Password</label>
+          <input
+            id="admin-password"
+            type="password"
+            autoComplete="current-password"
+            placeholder="Enter password"
+            value={password}
+            onChange={(event) => {
+              setPassword(event.target.value);
               setError('');
             }}
           />
           {error ? <small>{error}</small> : null}
-          <button className="primary" type="submit">Open dashboard <ArrowRight size={17} /></button>
+          <button className="primary" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Checking...' : 'Open dashboard'} <ArrowRight size={17} />
+          </button>
         </form>
       </section>
     </main>

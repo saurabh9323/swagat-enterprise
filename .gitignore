@@ -4,8 +4,13 @@ server/node_modules/
 work-npm-cache/
 
 .env
+*.env
+*.env.*
 server/.env
+server/.env.*
 client/.env
+client/.env.*
+!server/.env.example
 
 client/dist/
 *.log

@@ -1,7 +1,7 @@
 import React from 'react';
 import DashboardView from '../../../components/admin/DashboardView.jsx';
 
-export default function AdminDashboardPage({ stats, leads }) {
+export default function AdminDashboardPage({ stats, leads, properties }) {
   const hotLeads = leads.filter((lead) => lead.priority === 'Hot').length;
-  return <DashboardView stats={stats} hotLeads={hotLeads} />;
+  return <DashboardView stats={stats} hotLeads={hotLeads} leads={leads} properties={properties} />;
 }

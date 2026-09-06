@@ -1,0 +1,86 @@
+insert into properties (
+  id, title, description, property_type, listing_type, price, location, area,
+  status, amenities, score, commission, walk_time, legacy_image
+)
+values
+  (
+    'SE-NAL-101',
+    'Family-ready 1 BHK near Ostwal Nagari',
+    'A Swagat Enterprise local property reference for customers looking around Ostwal Nagari, Nalasopara East.',
+    '1 BHK',
+    'Sale',
+    3650000,
+    'Ostwal Nagari, Nalasopara East',
+    545,
+    'Fresh',
+    array['Loan Possible', 'School Nearby', 'Owner Reference'],
+    96,
+    73000,
+    '4 min from 90 Feet Road',
+    'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1200&q=80'
+  ),
+  (
+    'SE-NAL-102',
+    'Smart rental home for working couple',
+    'A rental home reference near the Nalasopara East station belt.',
+    '1 RK',
+    'Rent',
+    12500,
+    'Nalasopara East Station Belt',
+    360,
+    'Visit Today',
+    array['Fast Possession', 'Low Deposit', 'Owner Reference'],
+    89,
+    12500,
+    '12 min from station',
+    'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1200&q=80'
+  ),
+  (
+    'SE-NAL-103',
+    'Airy 2 BHK for growing family',
+    'A Swagat Enterprise local property reference for customers looking around Vasai-Virar Link Road.',
+    '2 BHK',
+    'Sale',
+    5750000,
+    'Vasai-Virar Link Road',
+    830,
+    'Negotiable',
+    array['Lift', 'Parking', 'Balcony'],
+    92,
+    115000,
+    'Close to daily market',
+    'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?auto=format&fit=crop&w=1200&q=80'
+  ),
+  (
+    'SE-NAL-104',
+    'Investor resale flat with clean papers',
+    'A Swagat Enterprise resale flat reference around Achole Road, Nalasopara East.',
+    '1 BHK',
+    'Sale',
+    4280000,
+    'Achole Road, Nalasopara East',
+    590,
+    'Hot',
+    array['Resale', 'Paperwork Pending', 'Rental Potential'],
+    98,
+    85600,
+    'Popular rental pocket',
+    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80'
+  ),
+  (
+    'SE-NAL-105',
+    'Compact shop space for local business',
+    'A Swagat Enterprise commercial shop rental reference around 90 Feet Road, Nalasopara East.',
+    'Shop',
+    'Rent',
+    18500,
+    '90 Feet Road, Nalasopara East',
+    210,
+    'Prime Frontage',
+    array['Commercial', 'Footfall', 'Easy Access'],
+    94,
+    18500,
+    'Road-touch visibility',
+    'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80'
+  )
+on conflict (id) do nothing;

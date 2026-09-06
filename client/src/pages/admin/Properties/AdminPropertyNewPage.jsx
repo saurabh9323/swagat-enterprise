@@ -1,12 +1,14 @@
 import React from 'react';
-import { Camera } from 'lucide-react';
+import PropertyReferenceForm from '../../../components/admin/PropertyReferenceForm.jsx';
 
-export default function AdminPropertyNewPage({ onAddProperty }) {
+export default function AdminPropertyNewPage({ onCreateProperty }) {
   return (
-    <section className="panel admin-placeholder">
-      <h2>Add property reference</h2>
-      <p>The full property creation form will be implemented in the property management phase.</p>
-      <button className="primary" onClick={onAddProperty}><Camera size={18} /> Add sample reference</button>
+    <section className="panel admin-placeholder property-form-page">
+      <div className="panel-title">
+        <h2>Add property reference</h2>
+        <span className="pill">Image upload enabled</span>
+      </div>
+      <PropertyReferenceForm onSubmit={onCreateProperty} />
     </section>
   );
 }

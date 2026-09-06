@@ -2,6 +2,7 @@ import React from 'react';
 import { BarChart3, BriefcaseBusiness, ClipboardList, Home, LayoutDashboard, LogOut, Settings, Users } from 'lucide-react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { adminSections } from '../../constants/business.js';
+import { clearAdminToken } from '../../services/api.js';
 import { lockAdmin } from '../../utils/adminAuth.js';
 import LogoLockup from '../common/LogoLockup.jsx';
 
@@ -18,6 +19,7 @@ export default function AdminSidebar() {
 
   function handleLogout() {
     lockAdmin();
+    clearAdminToken();
     navigate('/admin/login', { replace: true });
   }
 

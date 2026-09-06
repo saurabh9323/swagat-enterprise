@@ -2,7 +2,7 @@
   "name": "swagat-enterprise-real-estate",
   "version": "1.0.0",
   "private": true,
-  "description": "MERN real estate listing and admin dashboard for Swagat Enterprise.",
+  "description": "React and Express real estate listing platform with PostgreSQL-ready admin APIs for Swagat Enterprise.",
   "scripts": {
     "dev": "concurrently \"npm:server\" \"npm:client\"",
     "client": "npm --prefix client run dev",

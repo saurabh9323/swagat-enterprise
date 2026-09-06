@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import AdminGate from './AdminGate.jsx';
 import AdminLayout from '../layouts/AdminLayout.jsx';
 import AdminDashboardPage from '../pages/admin/Dashboard/AdminDashboardPage.jsx';
@@ -13,16 +13,18 @@ import AdminSettingsPage from '../pages/admin/Settings/AdminSettingsPage.jsx';
 import NotFoundPage from '../pages/public/NotFound/NotFoundPage.jsx';
 
 export default function AdminRoutes({ desk }) {
+  const navigate = useNavigate();
+
   return (
     <Routes>
       <Route path="login" element={<AdminLoginPage />} />
       <Route element={<AdminGate />}>
-        <Route element={<AdminLayout onAddProperty={desk.addDemoProperty} />}>
-          <Route index element={<AdminDashboardPage stats={desk.stats} leads={desk.leads} />} />
-          <Route path="properties" element={<AdminPropertiesPage properties={desk.properties} onAddProperty={desk.addDemoProperty} />} />
-          <Route path="properties/new" element={<AdminPropertyNewPage onAddProperty={desk.addDemoProperty} />} />
-          <Route path="properties/:id/edit" element={<AdminPropertyEditPage properties={desk.properties} />} />
-          <Route path="leads" element={<AdminLeadsPage leads={desk.leads} />} />
+        <Route element={<AdminLayout onAddProperty={() => navigate('/admin/properties/new')} />}>
+          <Route index element={<AdminDashboardPage stats={desk.stats} leads={desk.leads} properties={desk.properties} />} />
+          <Route path="properties" element={<AdminPropertiesPage properties={desk.properties} onCreateProperty={desk.addProperty} />} />
+          <Route path="properties/new" element={<AdminPropertyNewPage onCreateProperty={desk.addProperty} />} />
+          <Route path="properties/:id/edit" element={<AdminPropertyEditPage properties={desk.properties} onUpdateProperty={desk.updateProperty} />} />
+          <Route path="leads" element={<AdminLeadsPage leads={desk.leads} onCreateLead={desk.addLeadFromForm} onMoveLead={desk.updateLeadStage} />} />
           <Route path="deals" element={<AdminDealsPage />} />
           <Route path="settings" element={<AdminSettingsPage />} />
           <Route path="*" element={<NotFoundPage variant="admin" />} />

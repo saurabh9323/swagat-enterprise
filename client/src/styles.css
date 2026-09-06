@@ -648,7 +648,8 @@ p {
 
 .toolbar input,
 .toolbar select,
-.form-grid input {
+.form-grid input,
+.form-grid select {
   width: 100%;
   border: 0;
   outline: 0;
@@ -1080,7 +1081,8 @@ p {
 
 .admin-grid,
 .inventory-studio,
-.pipeline {
+.pipeline,
+.lead-workspace {
   display: grid;
   gap: 18px;
 }
@@ -1092,6 +1094,23 @@ p {
 
 .pipeline {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+}
+
+.lead-workspace {
+  align-items: start;
+}
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(260px, 1fr));
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+}
+
+.kanban-board .pipeline-column {
+  min-width: 260px;
 }
 
 .panel {
@@ -1128,6 +1147,60 @@ p {
   padding: 12px 0;
 }
 
+.analytics-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.analytics-strip article {
+  min-height: 118px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at top right, rgba(216, 255, 105, 0.2), transparent 9rem),
+    rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.16);
+}
+
+.analytics-strip article span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #b8c7c0;
+  font-weight: 900;
+}
+
+.analytics-strip article strong {
+  display: block;
+  margin: 10px 0 4px;
+  font-size: 34px;
+}
+
+.analytics-strip article small {
+  color: #d8ff69;
+  font-weight: 800;
+}
+
+.analytics-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) 42px minmax(120px, 1.4fr);
+  gap: 12px;
+  align-items: center;
+  padding: 11px 0;
+}
+
+.analytics-row span {
+  color: #dbe7df;
+  font-weight: 800;
+}
+
+.analytics-row b {
+  color: #d8ff69;
+}
+
 .owner-desk {
   display: grid;
   gap: 10px;
@@ -1151,7 +1224,8 @@ p {
   margin-bottom: 16px;
 }
 
-.form-grid label {
+.form-grid label,
+.lead-capture-form label {
   display: grid;
   gap: 8px;
   color: #dbe7df;
@@ -1159,12 +1233,154 @@ p {
   font-weight: 800;
 }
 
-.form-grid input {
+.wide-field {
+  grid-column: 1 / -1;
+}
+
+.form-grid input,
+.form-grid select,
+.lead-capture-form input,
+.lead-capture-form select {
   min-height: 44px;
   border-radius: 12px;
   padding: 0 12px;
   color: #ffffff;
   background: rgba(255, 255, 255, 0.1);
+}
+
+.form-grid select {
+  appearance: none;
+  border: 1px solid rgba(216, 255, 105, 0.1);
+}
+
+.property-reference-form {
+  display: grid;
+  gap: 16px;
+}
+
+.property-reference-form.compact {
+  gap: 14px;
+}
+
+.image-upload-card {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.45fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(216, 255, 105, 0.2);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(216, 255, 105, 0.12), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.06);
+}
+
+.image-dropzone {
+  position: relative;
+  min-height: 146px;
+  border: 1px dashed rgba(216, 255, 105, 0.58);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #d8ff69;
+  background: rgba(5, 10, 8, 0.18);
+  cursor: pointer;
+}
+
+.image-dropzone input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.image-dropzone img {
+  width: 100%;
+  height: 100%;
+  min-height: 146px;
+  object-fit: cover;
+}
+
+.image-dropzone span,
+.image-upload-card strong,
+.payload-preview span,
+.clear-image {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.image-dropzone span {
+  justify-content: center;
+  padding: 14px;
+  text-align: center;
+  font-weight: 900;
+}
+
+.image-upload-card strong {
+  margin-bottom: 6px;
+  color: #ffffff;
+}
+
+.image-upload-card p {
+  margin-bottom: 10px;
+  color: #b8c7c0;
+  line-height: 1.5;
+}
+
+.clear-image {
+  min-height: 34px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 10px;
+  color: #ffd9d0;
+  background: rgba(255, 107, 82, 0.14);
+}
+
+.form-error {
+  color: #ffb5a5;
+  font-weight: 900;
+}
+
+.payload-preview {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.payload-preview span {
+  min-height: 32px;
+  border-radius: 999px;
+  padding: 0 10px;
+  color: #dbe7df;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.property-form-page {
+  max-width: 880px;
+}
+
+.lead-capture-form {
+  display: grid;
+  gap: 16px;
+}
+
+.kanban-stack {
+  display: grid;
+  gap: 12px;
+  min-height: 120px;
+}
+
+.empty-column {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 16px;
+  color: #9fb1a8;
+  text-align: center;
 }
 
 .table {
@@ -1568,6 +1784,71 @@ p {
   transition: transform 180ms ease, background 180ms ease;
 }
 
+.lead-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lead-type-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.lead-type-row b {
+  color: #d8ff69;
+}
+
+.lead-type-row small {
+  color: #b8c7c0;
+}
+
+.lead-card-head span,
+.lead-signal {
+  width: fit-content;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: #10281f;
+  background: #d8ff69;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.lead-actions {
+  display: grid;
+  grid-template-columns: 36px 36px 36px;
+  gap: 8px;
+  justify-content: end;
+}
+
+.lead-actions button,
+.lead-actions a {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: #10281f;
+  background: #d8ff69;
+}
+
+.lead-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.lead-signal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #d8ff69;
+  background: rgba(216, 255, 105, 0.1);
+}
+
 .lead-card:hover {
   transform: translateX(4px);
   background: rgba(255, 255, 255, 0.14);
@@ -1851,7 +2132,12 @@ p {
   .admin-kpis,
   .services-band,
   .journey-grid,
-  .form-grid {
+  .form-grid,
+  .analytics-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .image-upload-card {
     grid-template-columns: 1fr;
   }
 
@@ -1874,6 +2160,10 @@ p {
   }
 
   .radar-row {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-row {
     grid-template-columns: 1fr;
   }
 }

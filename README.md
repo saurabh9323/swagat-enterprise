@@ -1,6 +1,6 @@
 # Swagat Enterprise Real Estate Platform
 
-A MERN-style real estate listing site and separate admin dashboard for **Swagat Enterprise**, solely owned by **Satish Pathak**.
+A React + Express real estate listing site and separate admin dashboard for **Swagat Enterprise**, solely owned by **Satish Pathak**. The backend is structured for PostgreSQL hosted on Supabase.
 
 Base office:
 Shop No 10, A Wing, Blossom Apartment, 90 Feet Road, Ostwal Nagari, Nalasopara East, Vasai-Virar, Palghar, Maharashtra 401209
@@ -65,8 +65,10 @@ The UI now uses small components, demo data is separated from UI, and shared for
 
 - Frontend: React + Vite
 - Backend: Node.js + Express
-- Database-ready: MongoDB + Mongoose
-- Development fallback: in-memory demo data if MongoDB is not configured
+- Database: PostgreSQL hosted on Supabase
+- Database access: `pg` connection pool
+- Authentication: backend JWT for protected admin APIs
+- Development fallback: in-memory demo data if PostgreSQL is not configured
 
 ## Run Locally
 
@@ -79,13 +81,27 @@ Public site: http://localhost:5173
 Admin panel: http://localhost:5173/admin  
 Backend API: http://localhost:5000/api
 
-## Configure MongoDB
+## Configure PostgreSQL
 
-Copy `server/.env.example` to `server/.env` and add your MongoDB URI.
+Copy `server/.env.example` to `server/.env` and add your Supabase PostgreSQL connection string and JWT secret.
 
 ```bash
-MONGODB_URI=mongodb://127.0.0.1:27017/swagat-enterprise
 PORT=5000
+NODE_ENV=development
+DATABASE_URL=postgresql://...
+JWT_SECRET=replace-with-a-long-random-secret
+JWT_EXPIRES_IN=1h
+CORS_ORIGIN=http://127.0.0.1:5173,http://localhost:5173
 ```
 
-The app works with demo data even before MongoDB is connected.
+Run the SQL files in `server/migrations/` against the Supabase PostgreSQL database before using the production API.
+
+Create the first admin by hashing a password:
+
+```bash
+npm.cmd --prefix server run hash:password -- "your-strong-password"
+```
+
+Then use the generated hash with the `create_admin_user(...)` PostgreSQL function from the migration.
+
+The app still works with demo data when PostgreSQL is not configured.

@@ -1,25 +1,41 @@
 import React from 'react';
 import LeadCard from '../lead/LeadCard.jsx';
 
-const leadStages = ['Hot', 'Warm', 'New'];
+const leadStages = ['New', 'Contacted', 'Visit Booked', 'Negotiation', 'Won', 'Lost'];
 
-export default function LeadsPipeline({ leads }) {
+function leadStage(lead) {
+  return lead.status || lead.stage || 'New';
+}
+
+export default function LeadsPipeline({ leads, onMoveLead }) {
   return (
-    <section className="pipeline">
-      {leadStages.map((stage) => {
-        const stageLeads = leads.filter((lead) => lead.priority === stage);
+    <section className="kanban-board" aria-label="Lead Kanban board">
+      {leadStages.map((stage, stageIndex) => {
+        const stageLeads = leads.filter((lead) => leadStage(lead) === stage || (!lead.status && !lead.stage && stage === 'New'));
+
         return (
           <div className="panel pipeline-column" key={stage}>
             <div className="panel-title">
               <h2>{stage}</h2>
               <span className="pill">{stageLeads.length}</span>
             </div>
-            {stageLeads.map((lead, index) => (
-              <LeadCard lead={lead} key={`${lead.name}-${index}`} />
-            ))}
+            <div className="kanban-stack">
+              {stageLeads.map((lead, index) => (
+                <LeadCard
+                  lead={lead}
+                  key={lead.id || `${lead.name}-${index}`}
+                  canMoveBack={stageIndex > 0}
+                  canMoveNext={stageIndex < leadStages.length - 1}
+                  onMove={(direction) => onMoveLead(lead.id, leadStages[stageIndex + direction])}
+                />
+              ))}
+              {stageLeads.length === 0 && <p className="empty-column">No leads here</p>}
+            </div>
           </div>
         );
       })}
     </section>
   );
 }
+
+export { leadStages };
