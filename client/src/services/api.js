@@ -1,4 +1,19 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const LOCAL_API_URL = 'http://localhost:5000/api';
+const PRODUCTION_API_URL = 'https://swagat-enterprise.onrender.com/api';
+
+function resolveApiBaseUrl() {
+  const envApiUrl = import.meta.env.VITE_API_URL?.trim();
+  const hostname = window.location.hostname;
+  const isLocalApp = hostname === 'localhost' || hostname === '127.0.0.1';
+
+  if (envApiUrl && (isLocalApp || !envApiUrl.includes('localhost'))) {
+    return envApiUrl;
+  }
+
+  return isLocalApp ? LOCAL_API_URL : PRODUCTION_API_URL;
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 const ADMIN_TOKEN_KEY = 'swagat_admin_token';
 
 async function request(path, options = {}) {

@@ -10,15 +10,42 @@ import { propertyRouter } from './routes/propertyRoutes.js';
 import { settingsRouter } from './routes/settingsRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
 
+const requiredCorsOrigins = [
+  'http://127.0.0.1:5173',
+  'http://localhost:5173',
+  'https://swagat-enterprise.netlify.app',
+];
+
 function corsOrigins() {
-  return env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean);
+  return Array.from(new Set([
+    ...requiredCorsOrigins,
+    ...env.CORS_ORIGIN.split(',').map((origin) => origin.trim()).filter(Boolean),
+  ]));
+}
+
+function isAllowedCorsOrigin(origin) {
+  if (!origin) return true;
+
+  if (corsOrigins().includes(origin)) return true;
+
+  try {
+    const { hostname, protocol } = new URL(origin);
+    return protocol === 'https:' && hostname.endsWith('.netlify.app');
+  } catch {
+    return false;
+  }
 }
 
 export function createApp() {
   const app = express();
 
   app.use(helmet());
-  app.use(cors({ origin: corsOrigins(), credentials: true }));
+  app.use(cors({
+    origin(origin, callback) {
+      callback(null, isAllowedCorsOrigin(origin));
+    },
+    credentials: true,
+  }));
   app.use(express.json({ limit: '2mb' }));
 
   app.get('/api/health', async (request, response) => {
