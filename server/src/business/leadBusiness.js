@@ -91,6 +91,51 @@ export async function updateStatus(id, status, request) {
   return leadService.updateLeadStatus(id, status);
 }
 
+export async function updateLead(id, payload, request) {
+  const currentLead = await getLead(id, request);
+  if (payload.status) assertStatus(payload.status);
+  const normalized = normalizeLeadPayload({
+    ...currentLead,
+    ...payload,
+    customerName: payload.customerName || payload.name || currentLead.customerName || currentLead.name,
+    leadType: payload.leadType || payload.lead_type || currentLead.leadType,
+    propertyType: payload.propertyType || payload.property_type || currentLead.propertyType,
+    preferredLocation: payload.preferredLocation || payload.preferred_location || currentLead.preferredLocation,
+    propertyId: payload.propertyId || payload.property_id || currentLead.propertyId,
+  });
+
+  if (!databaseEnabled(request)) {
+    let updated;
+    memoryLeads = memoryLeads.map((lead) => {
+      if (lead.id !== id) return lead;
+      updated = {
+        ...lead,
+        ...payload,
+        propertyId: normalized.property_id ?? lead.propertyId,
+        customerName: normalized.customer_name || lead.customerName,
+        name: normalized.customer_name || lead.name,
+        phone: normalized.phone ?? lead.phone,
+        email: normalized.email ?? lead.email,
+        message: normalized.message ?? lead.message,
+        need: normalized.need ?? lead.need,
+        budget: normalized.budget ?? lead.budget,
+        source: normalized.source || lead.source,
+        status: normalized.status || lead.status,
+        stage: normalized.status || lead.stage,
+        priority: normalized.priority || lead.priority,
+        leadType: normalized.lead_type || lead.leadType,
+        propertyType: normalized.property_type ?? lead.propertyType,
+        preferredLocation: normalized.preferred_location ?? lead.preferredLocation,
+        timeline: normalized.timeline ?? lead.timeline,
+      };
+      return updated;
+    });
+    return updated;
+  }
+
+  return leadService.updateLead(id, normalized);
+}
+
 export async function assignLead(id, assignedTo, request) {
   await getLead(id, request);
   if (!databaseEnabled(request)) {

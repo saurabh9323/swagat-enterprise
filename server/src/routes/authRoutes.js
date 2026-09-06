@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { currentUser, login, verifyLoginOtp } from '../business/authBusiness.js';
+import { currentUser, login, requestPasswordlessOtp, verifyLoginOtp } from '../business/authBusiness.js';
 import { authenticate } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiters.js';
 import { validate } from '../middleware/validate.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess } from '../utils/responses.js';
-import { loginOtpSchema, loginSchema } from '../validation/authSchemas.js';
+import { loginOtpSchema, loginSchema, otpRequestSchema } from '../validation/authSchemas.js';
 
 export const authRouter = Router();
 
@@ -17,6 +17,11 @@ authRouter.post('/login', authLimiter, validate(loginSchema), asyncHandler(async
 authRouter.post('/login/otp', authLimiter, validate(loginOtpSchema), asyncHandler(async (request, response) => {
   const data = await verifyLoginOtp(request.body);
   sendSuccess(response, data, 'OTP verified');
+}));
+
+authRouter.post('/otp/request', authLimiter, validate(otpRequestSchema), asyncHandler(async (request, response) => {
+  const data = await requestPasswordlessOtp(request.body, request);
+  sendSuccess(response, data, 'OTP sent');
 }));
 
 authRouter.get('/me', authenticate, (request, response) => {

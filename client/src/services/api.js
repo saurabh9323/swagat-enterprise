@@ -55,7 +55,9 @@ export function hasAdminToken() {
 
 export const api = {
   login: (payload) => request('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
+  requestLoginOtp: (payload) => request('/auth/otp/request', { method: 'POST', body: JSON.stringify(payload) }),
   verifyLoginOtp: (payload) => request('/auth/login/otp', { method: 'POST', body: JSON.stringify(payload) }),
+  getMe: () => request('/auth/me'),
   getUsers: (filters = {}) => {
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([key, value]) => {
@@ -82,7 +84,9 @@ export const api = {
   deleteProperty: (id) => request(`/properties/${id}`, { method: 'DELETE' }),
   createLead: (payload) => request('/leads', { method: 'POST', body: JSON.stringify(payload) }),
   getLeads: () => request('/leads'),
+  updateLead: (id, payload) => request(`/leads/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
   updateLeadStatus: (id, status) => request(`/leads/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+  deleteLead: (id) => request(`/leads/${id}`, { method: 'DELETE' }),
   getTheme: () => request('/settings/theme'),
   updateTheme: (payload) => request('/settings/theme', { method: 'PUT', body: JSON.stringify(payload) }),
 };

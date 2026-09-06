@@ -21,6 +21,11 @@ export async function updateLeadStatus(id, status) {
   return toCamelLead(result.rows[0]);
 }
 
+export async function updateLead(id, payload) {
+  const result = await query('select * from update_lead($1, $2::jsonb)', [id, JSON.stringify(payload)]);
+  return toCamelLead(result.rows[0]);
+}
+
 export async function assignLead(id, assignedTo) {
   const result = await query('select * from assign_lead($1, $2)', [id, assignedTo]);
   return toCamelLead(result.rows[0]);

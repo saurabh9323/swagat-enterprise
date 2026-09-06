@@ -680,10 +680,11 @@ p {
   animation: cardIn 560ms ease both;
   animation-delay: var(--delay);
   transition: transform 220ms ease, box-shadow 220ms ease;
+  will-change: transform;
 }
 
 .property-card:hover {
-  transform: translateY(-7px);
+  transform: translateY(-7px) rotateX(1deg);
   box-shadow: 0 28px 80px rgba(23, 24, 23, 0.12);
 }
 
@@ -711,11 +712,12 @@ p {
   aspect-ratio: 1.35;
   object-fit: cover;
   display: block;
-  transition: transform 600ms ease;
+  transition: filter 240ms ease, transform 700ms ease;
 }
 
 .image-button:hover img {
-  transform: scale(1.06);
+  filter: saturate(1.08) contrast(1.04);
+  transform: scale(1.07);
 }
 
 .image-button:hover::after {
@@ -735,9 +737,31 @@ p {
   font-weight: 900;
 }
 
+.image-button b {
+  position: absolute;
+  z-index: 1;
+  left: 14px;
+  bottom: 14px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: #12362b;
+  background: #d8ff69;
+  font-size: 12px;
+  font-weight: 950;
+}
+
 .property-actions .primary {
   background: #12362b;
   color: #ffffff;
+}
+
+.property-body em {
+  display: block;
+  margin-top: -4px;
+  margin-bottom: 10px;
+  color: #5d6a63;
+  font-style: normal;
+  font-weight: 900;
 }
 
 .journey-section {
@@ -1102,13 +1126,15 @@ p {
 .admin-grid,
 .inventory-studio,
 .pipeline,
-.lead-workspace {
+.lead-workspace,
+.users-workspace {
   display: grid;
   gap: 18px;
 }
 
 .admin-grid,
-.inventory-studio {
+.inventory-studio,
+.users-workspace {
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.55fr);
 }
 
@@ -1259,8 +1285,11 @@ p {
 
 .form-grid input,
 .form-grid select,
+.form-grid textarea,
 .lead-capture-form input,
-.lead-capture-form select {
+.lead-capture-form select,
+.user-search-row input,
+.security-grid select {
   min-height: 44px;
   border-radius: 12px;
   padding: 0 42px 0 12px;
@@ -1270,8 +1299,16 @@ p {
   outline: none;
 }
 
+.form-grid textarea {
+  min-height: 88px;
+  padding-top: 12px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
 .form-grid select,
-.lead-capture-form select {
+.lead-capture-form select,
+.security-grid select {
   appearance: none;
   color-scheme: dark;
   background-image:
@@ -1292,10 +1329,29 @@ p {
 
 .form-grid input:focus,
 .form-grid select:focus,
+.form-grid textarea:focus,
 .lead-capture-form input:focus,
-.lead-capture-form select:focus {
+.lead-capture-form select:focus,
+.user-search-row input:focus,
+.security-grid select:focus {
   border-color: var(--admin-accent);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--admin-accent) 18%, transparent);
+}
+
+.toggle-field {
+  min-height: 44px;
+  border: 1px solid rgba(216, 255, 105, 0.12);
+  border-radius: 12px;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  padding: 0 12px;
+  background: color-mix(in srgb, var(--admin-page) 42%, rgba(255, 255, 255, 0.1));
+}
+
+.toggle-field input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--admin-accent);
 }
 
 .property-reference-form {
@@ -1374,6 +1430,92 @@ p {
   line-height: 1.5;
 }
 
+.image-thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.image-thumb-grid figure {
+  position: relative;
+  min-height: 154px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(7, 13, 11, 0.28);
+  animation: galleryPop 280ms ease both;
+}
+
+.image-thumb-grid figure.is-primary {
+  border-color: var(--admin-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--admin-accent) 18%, transparent);
+}
+
+.image-thumb-grid img {
+  width: 100%;
+  height: 96px;
+  display: block;
+  object-fit: cover;
+}
+
+.image-thumb-grid figcaption {
+  position: absolute;
+  left: 7px;
+  bottom: 7px;
+  max-width: calc(100% - 14px);
+  border-radius: 999px;
+  padding: 4px 7px;
+  color: #10281f;
+  background: rgba(216, 255, 105, 0.9);
+  font-size: 10px;
+  font-weight: 950;
+}
+
+.thumb-primary,
+.thumb-remove {
+  position: absolute;
+  top: 6px;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  background: rgba(8, 25, 20, 0.82);
+}
+
+.thumb-primary {
+  right: 38px;
+}
+
+.thumb-remove {
+  right: 6px;
+  background: rgba(95, 28, 22, 0.86);
+}
+
+.image-meta-controls {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  padding: 7px;
+  background: color-mix(in srgb, var(--admin-page) 70%, transparent);
+}
+
+.image-meta-controls select,
+.image-meta-controls input {
+  width: 100%;
+  min-height: 32px;
+  border: 1px solid rgba(216, 255, 105, 0.14);
+  border-radius: 9px;
+  padding: 0 8px;
+  color: var(--admin-text);
+  background: color-mix(in srgb, var(--admin-panel) 60%, transparent);
+  outline: none;
+}
+
 .clear-image {
   min-height: 34px;
   border: 0;
@@ -1415,9 +1557,38 @@ p {
   align-items: start;
 }
 
+.settings-stack {
+  display: grid;
+  gap: 18px;
+}
+
 .theme-panel,
-.theme-preview-panel {
+.theme-preview-panel,
+.security-panel {
   animation: fadeUp 600ms ease both;
+}
+
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.security-grid label {
+  display: grid;
+  gap: 8px;
+  color: #dbe7df;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.security-panel p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0;
+  color: #b8c7c0;
+  line-height: 1.5;
 }
 
 .mode-switcher {
@@ -1623,6 +1794,68 @@ p {
   gap: 16px;
 }
 
+.user-management-form {
+  display: grid;
+  gap: 16px;
+}
+
+.user-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.user-search-row button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  color: #10281f;
+  background: var(--admin-accent);
+  font-weight: 950;
+}
+
+.user-list {
+  display: grid;
+  gap: 10px;
+}
+
+.user-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(130px, 0.65fr) 38px 38px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--admin-panel) 70%, transparent);
+}
+
+.user-card div {
+  display: grid;
+  gap: 4px;
+}
+
+.user-card strong,
+.user-card b {
+  color: var(--admin-text);
+}
+
+.user-card span,
+.user-card small {
+  color: #b8c7c0;
+}
+
+.user-card button {
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  color: #ffd9d0;
+  background: rgba(255, 107, 82, 0.14);
+}
+
 .kanban-stack {
   display: grid;
   gap: 12px;
@@ -1647,7 +1880,7 @@ p {
 
 .table-row {
   display: grid;
-  grid-template-columns: 104px minmax(160px, 1fr) 78px 110px 38px;
+  grid-template-columns: 104px minmax(160px, 1fr) 78px 110px 38px 38px;
   gap: 10px;
   align-items: center;
   padding: 12px;
@@ -1793,6 +2026,7 @@ p {
 }
 
 .detail-gallery {
+  position: relative;
   padding: 14px;
 }
 
@@ -1810,11 +2044,50 @@ p {
   margin-top: 10px;
 }
 
+.detail-gallery figure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
 .detail-gallery div img {
   width: 100%;
   aspect-ratio: 1.7;
-  border-radius: 14px;
   object-fit: cover;
+  display: block;
+  transition: transform 520ms ease;
+}
+
+.detail-gallery figure:hover img {
+  transform: scale(1.05);
+}
+
+.detail-gallery figcaption {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border-radius: 999px;
+  padding: 6px 9px;
+  color: #12362b;
+  background: rgba(216, 255, 105, 0.9);
+  font-size: 11px;
+  font-weight: 950;
+  text-align: center;
+}
+
+.detail-gallery > span {
+  position: absolute;
+  top: 26px;
+  right: 26px;
+  border-radius: 999px;
+  padding: 8px 11px;
+  color: #12362b;
+  background: #d8ff69;
+  box-shadow: 0 10px 24px rgba(18, 54, 43, 0.16);
+  font-size: 12px;
+  font-weight: 950;
 }
 
 .detail-panel {
@@ -1969,6 +2242,30 @@ p {
   line-height: 1.6;
 }
 
+.login-mode-switcher {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.login-mode-switcher button {
+  min-height: 42px;
+  border: 1px solid rgba(216, 255, 105, 0.14);
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #eef4f0;
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 950;
+}
+
+.login-mode-switcher button.active {
+  color: #10281f;
+  background: #d8ff69;
+}
+
 .admin-login-card form {
   display: grid;
   gap: 10px;
@@ -1999,6 +2296,10 @@ p {
 .admin-login-card small {
   color: #ffb5a5;
   font-weight: 800;
+}
+
+.admin-login-card .login-notice {
+  color: #d8ff69;
 }
 
 .admin-login-card button {
@@ -2190,6 +2491,17 @@ p {
   }
 }
 
+@keyframes galleryPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -2213,14 +2525,16 @@ p {
   .public-hero,
   .office-band,
   .admin-grid,
-  .inventory-studio {
+  .inventory-studio,
+  .users-workspace {
     grid-template-columns: 1fr;
   }
 
   .quick-strip,
   .admin-kpis,
   .services-band,
-  .journey-grid {
+  .journey-grid,
+  .security-grid {
     grid-template-columns: repeat(2, minmax(180px, 1fr));
   }
 }
@@ -2388,7 +2702,8 @@ p {
   .services-band,
   .journey-grid,
   .form-grid,
-  .analytics-strip {
+  .analytics-strip,
+  .security-grid {
     grid-template-columns: 1fr;
   }
 

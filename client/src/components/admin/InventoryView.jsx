@@ -1,10 +1,10 @@
 import React from 'react';
-import { SquarePen } from 'lucide-react';
+import { SquarePen, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { currency } from '../../utils/format.js';
 import PropertyReferenceForm from './PropertyReferenceForm.jsx';
 
-export default function InventoryView({ properties, onCreateProperty }) {
+export default function InventoryView({ properties, onCreateProperty, onDeleteProperty }) {
   return (
     <section className="inventory-studio">
       <div className="panel property-form">
@@ -30,6 +30,9 @@ export default function InventoryView({ properties, onCreateProperty }) {
               <Link className="icon-action" aria-label={`Edit ${property.title}`} to={`/admin/properties/${property.id}/edit`}>
                 <SquarePen size={17} />
               </Link>
+              <button type="button" aria-label={`Delete ${property.title}`} onClick={() => window.confirm(`Delete ${property.title}?`) && onDeleteProperty(property.id)}>
+                <Trash2 size={17} />
+              </button>
             </div>
           ))}
         </div>

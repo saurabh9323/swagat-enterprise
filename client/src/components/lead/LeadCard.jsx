@@ -1,7 +1,7 @@
 import React from 'react';
-import { ArrowLeft, ArrowRight, Phone, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Pencil, Phone, Sparkles, Trash2 } from 'lucide-react';
 
-export default function LeadCard({ lead, onMove, canMoveBack, canMoveNext }) {
+export default function LeadCard({ lead, onMove, canMoveBack, canMoveNext, onEdit, onDelete }) {
   return (
     <article className="lead-card">
       <div className="lead-card-head">
@@ -22,6 +22,8 @@ export default function LeadCard({ lead, onMove, canMoveBack, canMoveNext }) {
       <div className="lead-actions">
         <button type="button" onClick={() => onMove(-1)} disabled={!canMoveBack} aria-label="Move lead back"><ArrowLeft size={15} /></button>
         {lead.phone && <a href={`tel:${lead.phone}`} aria-label={`Call ${lead.name || lead.customerName}`}><Phone size={15} /></a>}
+        <button type="button" onClick={onEdit} aria-label={`Edit ${lead.name || lead.customerName}`}><Pencil size={15} /></button>
+        <button type="button" onClick={() => window.confirm(`Archive ${lead.name || lead.customerName}?`) && onDelete()} aria-label={`Archive ${lead.name || lead.customerName}`}><Trash2 size={15} /></button>
         <button type="button" onClick={() => onMove(1)} disabled={!canMoveNext} aria-label="Move lead forward"><ArrowRight size={15} /></button>
       </div>
       <span className="lead-signal"><Sparkles size={13} /> Follow up today</span>

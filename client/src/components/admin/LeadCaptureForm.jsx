@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CircleDollarSign, Phone, Save, UserRound } from 'lucide-react';
 
 const defaultLead = {
+  propertyId: '',
   customerName: '',
   phone: '',
   email: '',
@@ -23,8 +24,30 @@ const leadTypes = ['Buyer', 'Seller', 'Rental', 'Commercial', 'Investor'];
 const propertyTypes = ['1 RK', '1 BHK', '2 BHK', '3 BHK', 'Shop', 'Office', 'Plot'];
 const timelines = ['Today', 'This week', 'This month', 'Just exploring'];
 
-export default function LeadCaptureForm({ onSubmit }) {
-  const [form, setForm] = useState(defaultLead);
+function leadFormValue(lead) {
+  if (!lead) return defaultLead;
+
+  return {
+    ...defaultLead,
+    propertyId: lead.propertyId || '',
+    customerName: lead.customerName || lead.name || '',
+    phone: lead.phone || '',
+    email: lead.email || '',
+    leadType: lead.leadType || 'Buyer',
+    propertyType: lead.propertyType || '1 BHK',
+    preferredLocation: lead.preferredLocation || 'Nalasopara East',
+    need: lead.need || '',
+    budget: lead.budget || '',
+    timeline: lead.timeline || 'This week',
+    message: lead.message || '',
+    source: lead.source || 'Walk-in',
+    status: lead.status || lead.stage || 'New',
+    priority: lead.priority || 'Warm',
+  };
+}
+
+export default function LeadCaptureForm({ onSubmit, initialValue = null, submitLabel = 'Save lead', onCancel }) {
+  const [form, setForm] = useState(() => leadFormValue(initialValue));
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
@@ -51,6 +74,7 @@ export default function LeadCaptureForm({ onSubmit }) {
     try {
       await onSubmit({
         ...form,
+        propertyId: form.propertyId.trim() || null,
         name: form.customerName.trim(),
         customerName: form.customerName.trim(),
         phone: form.phone.trim(),
@@ -67,10 +91,11 @@ export default function LeadCaptureForm({ onSubmit }) {
   return (
     <form className="lead-capture-form" onSubmit={handleSubmit}>
       <div className="panel-title">
-        <h2>New lead</h2>
-        <span className="pill">Live pipeline</span>
+        <h2>{initialValue ? 'Edit lead' : 'New lead'}</h2>
+        <span className="pill">{initialValue ? 'Update pipeline' : 'Live pipeline'}</span>
       </div>
       <div className="form-grid">
+        <label>Property ID<input value={form.propertyId} onChange={(event) => updateField('propertyId', event.target.value)} placeholder="SE-NAL-FDFD7EF7" /></label>
         <label>Customer<input value={form.customerName} onChange={(event) => updateField('customerName', event.target.value)} placeholder="Customer name" /></label>
         <label>Phone<input value={form.phone} onChange={(event) => updateField('phone', event.target.value)} placeholder="Mobile number" inputMode="tel" /></label>
         <label>Email<input value={form.email} onChange={(event) => updateField('email', event.target.value)} placeholder="Optional email" inputMode="email" /></label>
@@ -106,8 +131,9 @@ export default function LeadCaptureForm({ onSubmit }) {
       </div>
       {error && <small className="form-error">{error}</small>}
       <button className="primary" type="submit" disabled={saving}>
-        <Save size={18} /> {saving ? 'Saving lead...' : 'Save lead'}
+        <Save size={18} /> {saving ? 'Saving lead...' : submitLabel}
       </button>
+      {onCancel && <button className="secondary-action" type="button" onClick={onCancel}>Cancel edit</button>}
       <div className="payload-preview">
         <span><UserRound size={14} /> {form.customerName || 'Customer'}</span>
         <span><Phone size={14} /> {form.phone || 'Phone'}</span>

@@ -2,9 +2,17 @@ import { z } from 'zod';
 
 const propertyId = z.string().min(1).max(80);
 const optionalString = z.string().trim().max(500).optional().nullable();
+const imageReferenceSchema = z.string().trim().max(2000000).refine((value) => (
+  value.startsWith('data:image/jpeg;base64,')
+  || value.startsWith('data:image/png;base64,')
+  || value.startsWith('data:image/webp;base64,')
+  || z.string().url().safeParse(value).success
+), 'Use a valid image URL or Base64 JPG, PNG, or WebP data URL.');
 const imagePayloadSchema = z.object({
-  imageUrl: z.string().url(),
+  imageUrl: imageReferenceSchema,
   storagePath: z.string().trim().min(1).max(500).optional().nullable(),
+  imageLabel: z.string().trim().max(80).optional().nullable(),
+  imageSize: z.string().trim().max(80).optional().nullable(),
   displayOrder: z.coerce.number().int().nonnegative().optional(),
   isPrimary: z.boolean().optional(),
 });
@@ -12,6 +20,7 @@ const propertyBodySchema = z.object({
   id: propertyId.optional(),
   title: z.string().trim().min(3).max(180),
   description: z.string().trim().max(2000).optional().nullable(),
+  apartmentName: z.string().trim().max(180).optional().nullable(),
   propertyType: z.string().trim().min(1).max(80).optional(),
   type: z.string().trim().min(1).max(80).optional(),
   listingType: z.enum(['Sale', 'Rent']).optional(),
@@ -33,8 +42,9 @@ const propertyBodySchema = z.object({
   score: z.coerce.number().int().min(0).max(100).optional().nullable(),
   commission: z.coerce.number().nonnegative().optional().nullable(),
   walkTime: optionalString,
-  image: z.string().trim().max(2000000).optional().nullable(),
-  images: z.array(imagePayloadSchema).optional(),
+  image: imageReferenceSchema.optional().nullable(),
+  images: z.array(imagePayloadSchema).max(8).optional(),
+  isActive: z.boolean().optional(),
 });
 
 export const propertyParamsSchema = z.object({
@@ -96,8 +106,10 @@ export const imageCreateSchema = z.object({
     propertyId,
   }),
   body: z.object({
-    imageUrl: z.string().url(),
-    storagePath: z.string().trim().min(1).max(500),
+    imageUrl: imageReferenceSchema,
+    storagePath: z.string().trim().min(1).max(500).optional().nullable(),
+    imageLabel: z.string().trim().max(80).optional().nullable(),
+    imageSize: z.string().trim().max(80).optional().nullable(),
     displayOrder: z.coerce.number().int().nonnegative().optional(),
     isPrimary: z.boolean().optional(),
   }),

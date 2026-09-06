@@ -3,6 +3,7 @@ import { initialProperties, seedLeads } from '../data/demoData.js';
 import { api } from '../services/api.js';
 import { currency } from '../utils/format.js';
 import { getPortfolioStats } from '../utils/property.js';
+import { getPrimaryPropertyImage, getPropertyImages } from '../utils/propertyImages.js';
 
 function initialLeadStatus(lead) {
   if (['New', 'Contacted', 'Visit Booked', 'Negotiation', 'Won', 'Lost'].includes(lead.status)) return lead.status;
@@ -114,6 +115,40 @@ export function usePropertyDesk() {
     }
   }
 
+  async function updateLead(leadId, payload) {
+    const normalizedPayload = {
+      ...payload,
+      name: payload.customerName || payload.name,
+      customerName: payload.customerName || payload.name,
+      stage: payload.status || payload.stage,
+      status: payload.status || payload.stage,
+    };
+
+    setLeads((current) => current.map((lead) => (
+      lead.id === leadId ? { ...lead, ...normalizedPayload } : lead
+    )));
+
+    const savedLead = await api.updateLead(leadId, payload);
+    if (savedLead?.id) {
+      setLeads((current) => current.map((lead) => (lead.id === leadId ? savedLead : lead)));
+    }
+    return savedLead;
+  }
+
+  async function deleteLead(leadId) {
+    const previousLeads = leads;
+    setLeads((current) => current.filter((lead) => lead.id !== leadId));
+
+    try {
+      if (!String(leadId).startsWith('lead-') && !String(leadId).startsWith('seed-lead-')) {
+        await api.deleteLead(leadId);
+      }
+    } catch (error) {
+      setLeads(previousLeads);
+      throw error;
+    }
+  }
+
   async function addProperty(payload) {
     const localProperty = {
       ...payload,
@@ -124,7 +159,8 @@ export function usePropertyDesk() {
       listingType: payload.listingType || payload.intent,
       tags: payload.tags || payload.amenities || [],
       amenities: payload.amenities || payload.tags || [],
-      image: payload.image || 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80',
+      images: getPropertyImages(payload),
+      image: getPrimaryPropertyImage(payload) || 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80',
     };
 
     setProperties((current) => [localProperty, ...current]);
@@ -153,7 +189,8 @@ export function usePropertyDesk() {
             propertyType: payload.propertyType || payload.type || property.propertyType,
             intent: payload.listingType || payload.intent || property.intent,
             listingType: payload.listingType || payload.intent || property.listingType,
-            image: payload.image || property.image,
+            images: payload.images ? getPropertyImages(payload) : property.images,
+            image: payload.images ? getPrimaryPropertyImage(payload) : payload.image || property.image,
           }
         : property
     )));
@@ -165,14 +202,31 @@ export function usePropertyDesk() {
     return savedProperty;
   }
 
+  async function deleteProperty(id) {
+    const previousProperties = properties;
+    setProperties((current) => current.filter((property) => property.id !== id));
+
+    try {
+      if (!String(id).startsWith('SE-NAL-17')) {
+        await api.deleteProperty(id);
+      }
+    } catch (error) {
+      setProperties(previousProperties);
+      throw error;
+    }
+  }
+
   return {
     properties,
     leads,
     stats,
     addLead,
     addLeadFromForm,
+    updateLead,
+    deleteLead,
     updateLeadStage,
     addProperty,
     updateProperty,
+    deleteProperty,
   };
 }

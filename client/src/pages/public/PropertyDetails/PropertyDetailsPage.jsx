@@ -5,6 +5,7 @@ import { owner } from '../../../constants/business.js';
 import { currency, whatsappUrl } from '../../../utils/format.js';
 import Seo from '../../../components/seo/Seo.jsx';
 import { breadcrumbJsonLd, propertyPageJsonLd, propertySeo } from '../../../utils/seo.js';
+import { getPrimaryPropertyImage, getPropertyImages } from '../../../utils/propertyImages.js';
 
 export default function PropertyDetailsPage({ properties, onLead }) {
   const { id } = useParams();
@@ -27,6 +28,9 @@ export default function PropertyDetailsPage({ properties, onLead }) {
 
   const message = `Hi, I am interested in ${property.title} (${property.id}).`;
   const seo = propertySeo(property);
+  const galleryImages = getPropertyImages(property);
+  const primaryImage = getPrimaryPropertyImage(property);
+  const secondaryImages = galleryImages.length > 1 ? galleryImages.filter((image) => image.imageUrl !== primaryImage).slice(0, 4) : galleryImages.slice(0, 2);
 
   return (
     <section className="detail-page page-shell">
@@ -34,7 +38,7 @@ export default function PropertyDetailsPage({ properties, onLead }) {
         path={`/properties/${property.id}`}
         title={seo.title}
         description={seo.description}
-        image={property.image}
+        image={primaryImage}
         type={seo.type}
         jsonLd={[
           breadcrumbJsonLd([
@@ -55,11 +59,16 @@ export default function PropertyDetailsPage({ properties, onLead }) {
       <Link className="back-inline" to="/properties"><ArrowLeft size={18} /> Back to properties</Link>
       <div className="detail-grid">
         <div className="detail-gallery">
-          <img src={property.image} alt={`${property.title} in ${property.location}`} loading="eager" />
+          <img src={primaryImage} alt={`${property.title} in ${property.location}`} loading="eager" />
           <div>
-            <img src={property.image} alt={`${property.type} ${property.intent.toLowerCase()} reference in ${property.location}`} loading="lazy" />
-            <img src={property.image} alt={`${property.title} property view`} loading="lazy" />
+            {secondaryImages.map((image, index) => (
+              <figure key={`${image.imageUrl}-${index}`}>
+                <img src={image.imageUrl} alt={`${property.title} ${image.imageLabel || `view ${index + 2}`}`} loading="lazy" />
+                <figcaption>{image.imageLabel || `View ${index + 2}`}{image.imageSize ? ` · ${image.imageSize}` : ''}</figcaption>
+              </figure>
+            ))}
           </div>
+          {galleryImages.length > 1 && <span>{galleryImages.length} property photos</span>}
         </div>
 
         <article className="detail-panel">

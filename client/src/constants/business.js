@@ -17,6 +17,7 @@ export const adminSections = [
   { id: 'dashboard', label: 'Dashboard', href: '/admin' },
   { id: 'properties', label: 'Properties', href: '/admin/properties' },
   { id: 'leads', label: 'Leads', href: '/admin/leads' },
+  { id: 'users', label: 'Users', href: '/admin/users' },
   { id: 'deals', label: 'Deals', href: '/admin/deals' },
   { id: 'settings', label: 'Settings', href: '/admin/settings' },
 ];

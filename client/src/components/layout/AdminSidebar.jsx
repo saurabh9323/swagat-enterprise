@@ -10,6 +10,7 @@ const sectionIcons = {
   dashboard: <BarChart3 size={18} />,
   properties: <ClipboardList size={18} />,
   leads: <Users size={18} />,
+  users: <Users size={18} />,
   deals: <BriefcaseBusiness size={18} />,
   settings: <Settings size={18} />,
 };

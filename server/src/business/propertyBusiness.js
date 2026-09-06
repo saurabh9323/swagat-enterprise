@@ -100,13 +100,18 @@ export async function updateProperty(id, payload, request) {
         listingType: listingType || property.listingType,
         tags: payload.tags || payload.amenities || property.tags,
         amenities: payload.amenities || payload.tags || property.amenities,
+        images: payload.images || property.images,
+        image: payload.image || payload.images?.find((image) => image.isPrimary)?.imageUrl || payload.images?.[0]?.imageUrl || property.image,
       };
       return updated;
     });
     return updated;
   }
 
-  return propertyService.updateProperty(id, normalizePropertyPayload(payload, undefined));
+  const normalized = normalizePropertyPayload(payload, undefined);
+  if (Array.isArray(payload.images)) normalized.images = payload.images;
+
+  return propertyService.updateProperty(id, normalized);
 }
 
 export async function updateStatus(id, status, request) {

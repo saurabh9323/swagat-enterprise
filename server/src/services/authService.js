@@ -56,7 +56,7 @@ export function publicUser(user) {
   };
 }
 
-export async function createOtpChallenge(user, request) {
+export async function createOtpChallenge(user, request, purpose = 'login_mfa') {
   const otp = String(randomInt(100000, 1000000));
   const otpHash = await bcrypt.hash(otp, 12);
   const destination = user.otp_channel === 'sms' ? user.phone : user.email;
@@ -66,7 +66,7 @@ export async function createOtpChallenge(user, request) {
     'select * from create_user_otp($1, $2, $3, $4, $5, $6, $7, $8)',
     [
       user.id,
-      'login_mfa',
+      purpose,
       user.otp_channel || 'email',
       destination,
       otpHash,

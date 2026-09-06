@@ -33,11 +33,13 @@ export async function createProperty(payload, images = []) {
 
     for (const [index, image] of images.entries()) {
       await client.query(
-        'select * from add_property_image($1, $2, $3, $4, $5)',
+        'select * from add_property_image($1, $2, $3, $4, $5, $6, $7)',
         [
           property.id,
           image.storagePath || image.imageUrl,
           image.imageUrl,
+          image.imageLabel || null,
+          image.imageSize || null,
           image.displayOrder ?? index,
           image.isPrimary ?? index === 0,
         ]
@@ -50,8 +52,31 @@ export async function createProperty(payload, images = []) {
 }
 
 export async function updateProperty(id, payload) {
-  const result = await query('select * from update_property($1, $2::jsonb)', [id, JSON.stringify(payload)]);
-  return toCamelProperty(result.rows[0]);
+  return withTransaction(async (client) => {
+    const result = await client.query('select * from update_property($1, $2::jsonb)', [id, JSON.stringify(payload)]);
+
+    if (Array.isArray(payload.images)) {
+      await client.query('delete from property_images where property_id = $1', [id]);
+
+      for (const [index, image] of payload.images.entries()) {
+        await client.query(
+          'select * from add_property_image($1, $2, $3, $4, $5, $6, $7)',
+          [
+            id,
+            image.storagePath || image.imageUrl,
+            image.imageUrl,
+            image.imageLabel || null,
+            image.imageSize || null,
+            image.displayOrder ?? index,
+            image.isPrimary ?? index === 0,
+          ]
+        );
+      }
+    }
+
+    const refreshed = await client.query('select * from get_property_by_id($1)', [id]);
+    return toCamelProperty(refreshed.rows[0] || result.rows[0]);
+  });
 }
 
 export async function updatePropertyStatus(id, status) {
@@ -66,8 +91,16 @@ export async function deactivateProperty(id) {
 
 export async function addPropertyImage(propertyId, image) {
   const result = await query(
-    'select * from add_property_image($1, $2, $3, $4, $5)',
-    [propertyId, image.storagePath, image.imageUrl, image.displayOrder ?? 0, image.isPrimary ?? false]
+    'select * from add_property_image($1, $2, $3, $4, $5, $6, $7)',
+    [
+      propertyId,
+      image.storagePath || image.imageUrl,
+      image.imageUrl,
+      image.imageLabel || null,
+      image.imageSize || null,
+      image.displayOrder ?? 0,
+      image.isPrimary ?? false,
+    ]
   );
   return result.rows[0];
 }

@@ -10,6 +10,7 @@ import AdminPropertiesPage from '../pages/admin/Properties/AdminPropertiesPage.j
 import AdminPropertyEditPage from '../pages/admin/Properties/AdminPropertyEditPage.jsx';
 import AdminPropertyNewPage from '../pages/admin/Properties/AdminPropertyNewPage.jsx';
 import AdminSettingsPage from '../pages/admin/Settings/AdminSettingsPage.jsx';
+import AdminUsersPage from '../pages/admin/Users/AdminUsersPage.jsx';
 import NotFoundPage from '../pages/public/NotFound/NotFoundPage.jsx';
 import { api } from '../services/api.js';
 
@@ -36,10 +37,11 @@ export default function AdminRoutes({ desk, themeSettings }) {
           )}
         >
           <Route index element={<AdminDashboardPage stats={desk.stats} leads={desk.leads} properties={desk.properties} />} />
-          <Route path="properties" element={<AdminPropertiesPage properties={desk.properties} onCreateProperty={desk.addProperty} />} />
+          <Route path="properties" element={<AdminPropertiesPage properties={desk.properties} onCreateProperty={desk.addProperty} onDeleteProperty={desk.deleteProperty} />} />
           <Route path="properties/new" element={<AdminPropertyNewPage onCreateProperty={desk.addProperty} />} />
           <Route path="properties/:id/edit" element={<AdminPropertyEditPage properties={desk.properties} onUpdateProperty={desk.updateProperty} />} />
-          <Route path="leads" element={<AdminLeadsPage leads={desk.leads} onCreateLead={desk.addLeadFromForm} onMoveLead={desk.updateLeadStage} />} />
+          <Route path="leads" element={<AdminLeadsPage leads={desk.leads} onCreateLead={desk.addLeadFromForm} onUpdateLead={desk.updateLead} onDeleteLead={desk.deleteLead} onMoveLead={desk.updateLeadStage} />} />
+          <Route path="users" element={<AdminUsersPage />} />
           <Route path="deals" element={<AdminDealsPage />} />
           <Route
             path="settings"

@@ -6,6 +6,7 @@ export function toCamelProperty(row) {
     id: row.id,
     title: row.title,
     description: row.description,
+    apartmentName: row.apartment_name,
     location: row.location,
     price: Number(row.price ?? 0),
     type: row.property_type,
@@ -95,6 +96,7 @@ export function normalizePropertyPayload(payload, userId) {
     id: payload.id,
     title: payload.title,
     description: payload.description || null,
+    apartment_name: payload.apartmentName || payload.apartment_name || null,
     property_type: payload.propertyType || payload.type,
     listing_type: payload.listingType || payload.intent,
     price: payload.price,
@@ -113,6 +115,7 @@ export function normalizePropertyPayload(payload, userId) {
     commission: payload.commission ?? null,
     walk_time: payload.walkTime ?? null,
     legacy_image: payload.image ?? null,
+    is_active: payload.isActive,
     created_by: userId,
   };
 }

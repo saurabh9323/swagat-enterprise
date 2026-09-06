@@ -5,7 +5,7 @@ import { leadLimiter } from '../middleware/rateLimiters.js';
 import { validate } from '../middleware/validate.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { sendSuccess } from '../utils/responses.js';
-import { leadAssignSchema, leadCreateSchema, leadParamsSchema, leadStatusSchema } from '../validation/leadSchemas.js';
+import { leadAssignSchema, leadCreateSchema, leadParamsSchema, leadStatusSchema, leadUpdateSchema } from '../validation/leadSchemas.js';
 
 export const leadRouter = Router();
 
@@ -27,6 +27,11 @@ leadRouter.get('/:id', authenticate, authorize('admin', 'owner'), validate(leadP
 leadRouter.patch('/:id/status', authenticate, authorize('admin', 'owner'), validate(leadStatusSchema), asyncHandler(async (request, response) => {
   const lead = await leadBusiness.updateStatus(request.params.id, request.body.status, request);
   response.json(lead);
+}));
+
+leadRouter.patch('/:id', authenticate, authorize('admin', 'owner'), validate(leadUpdateSchema), asyncHandler(async (request, response) => {
+  const lead = await leadBusiness.updateLead(request.params.id, request.body, request);
+  sendSuccess(response, lead, 'Lead updated');
 }));
 
 leadRouter.patch('/:id/assign', authenticate, authorize('admin', 'owner'), validate(leadAssignSchema), asyncHandler(async (request, response) => {

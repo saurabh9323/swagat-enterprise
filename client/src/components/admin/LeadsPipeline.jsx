@@ -7,7 +7,7 @@ function leadStage(lead) {
   return lead.status || lead.stage || 'New';
 }
 
-export default function LeadsPipeline({ leads, onMoveLead }) {
+export default function LeadsPipeline({ leads, onMoveLead, onEditLead, onDeleteLead }) {
   return (
     <section className="kanban-board" aria-label="Lead Kanban board">
       {leadStages.map((stage, stageIndex) => {
@@ -27,6 +27,8 @@ export default function LeadsPipeline({ leads, onMoveLead }) {
                   canMoveBack={stageIndex > 0}
                   canMoveNext={stageIndex < leadStages.length - 1}
                   onMove={(direction) => onMoveLead(lead.id, leadStages[stageIndex + direction])}
+                  onEdit={() => onEditLead(lead)}
+                  onDelete={() => onDeleteLead(lead.id)}
                 />
               ))}
               {stageLeads.length === 0 && <p className="empty-column">No leads here</p>}

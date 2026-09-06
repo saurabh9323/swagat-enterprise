@@ -44,6 +44,37 @@ export const leadStatusSchema = z.object({
   }),
 });
 
+const leadBodyFields = {
+  propertyId: z.string().trim().max(80).optional().nullable(),
+  property_id: z.string().trim().max(80).optional().nullable(),
+  customerName: z.string().trim().min(2).max(120).optional(),
+  name: z.string().trim().min(2).max(120).optional(),
+  phone: z.string().trim().min(7).max(20).optional().nullable(),
+  email: z.string().email().optional().nullable(),
+  message: z.string().trim().max(1200).optional().nullable(),
+  need: z.string().trim().max(300).optional().nullable(),
+  budget: z.string().trim().max(100).optional().nullable(),
+  source: z.string().trim().max(80).optional(),
+  status: z.string().trim().max(80).optional(),
+  priority: z.enum(['Hot', 'Warm', 'New']).optional(),
+  leadType: z.enum(['Buyer', 'Seller', 'Rental', 'Commercial', 'Investor']).optional(),
+  lead_type: z.enum(['Buyer', 'Seller', 'Rental', 'Commercial', 'Investor']).optional(),
+  propertyType: z.string().trim().max(80).optional().nullable(),
+  property_type: z.string().trim().max(80).optional().nullable(),
+  preferredLocation: z.string().trim().max(180).optional().nullable(),
+  preferred_location: z.string().trim().max(180).optional().nullable(),
+  timeline: z.string().trim().max(120).optional().nullable(),
+};
+
+export const leadUpdateSchema = z.object({
+  params: z.object({
+    id: leadId,
+  }),
+  body: z.object(leadBodyFields).refine((value) => Object.keys(value).length > 0, {
+    message: 'At least one lead field is required',
+  }),
+});
+
 export const leadAssignSchema = z.object({
   params: z.object({
     id: leadId,
