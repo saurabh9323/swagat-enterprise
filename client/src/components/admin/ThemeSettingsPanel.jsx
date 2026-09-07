@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Moon, Palette, RotateCcw, Save, Sun } from 'lucide-react';
+import { useToast } from '../common/ToastProvider.jsx';
 import { defaultTheme, lightTheme } from '../../hooks/useThemeSettings.js';
 
 const colorFields = [
@@ -12,6 +13,7 @@ const colorFields = [
 ];
 
 export default function ThemeSettingsPanel({ theme, onChange, onSave, onReset }) {
+  const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [showPreview, setShowPreview] = useState(true);
@@ -27,8 +29,10 @@ export default function ThemeSettingsPanel({ theme, onChange, onSave, onReset })
     try {
       await onSave(theme);
       setMessage('Saved to database.');
+      toast.success('Website colors saved to database.', 'Theme saved');
     } catch (error) {
       setMessage(error.message || 'Could not save theme.');
+      toast.error(error, 'Theme could not be saved');
     } finally {
       setSaving(false);
     }

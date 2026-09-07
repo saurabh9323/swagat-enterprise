@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CircleDollarSign, Phone, Save, UserRound } from 'lucide-react';
+import { useToast } from '../common/ToastProvider.jsx';
 
 const defaultLead = {
   propertyId: '',
@@ -47,6 +48,7 @@ function leadFormValue(lead) {
 }
 
 export default function LeadCaptureForm({ onSubmit, initialValue = null, submitLabel = 'Save lead', onCancel }) {
+  const toast = useToast();
   const [form, setForm] = useState(() => leadFormValue(initialValue));
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -61,11 +63,13 @@ export default function LeadCaptureForm({ onSubmit, initialValue = null, submitL
 
     if (!form.customerName.trim()) {
       setError('Customer name is required.');
+      toast.error('Customer name is required.', 'Lead not saved');
       return;
     }
 
     if (!form.phone.trim()) {
       setError('Phone number is required.');
+      toast.error('Phone number is required.', 'Lead not saved');
       return;
     }
 
@@ -81,8 +85,10 @@ export default function LeadCaptureForm({ onSubmit, initialValue = null, submitL
         status: form.status,
       });
       setForm(defaultLead);
+      toast.success(initialValue ? 'Lead updated successfully.' : 'Lead added successfully.', 'Lead saved');
     } catch (submitError) {
       setError(submitError.message || 'Lead could not be saved.');
+      toast.error(submitError, 'Lead could not be saved');
     } finally {
       setSaving(false);
     }

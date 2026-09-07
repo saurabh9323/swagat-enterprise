@@ -2,11 +2,13 @@ import React from 'react';
 import { ArrowRight, KeyRound, ShieldCheck, Smartphone } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LogoLockup from '../../../components/common/LogoLockup.jsx';
+import { useToast } from '../../../components/common/ToastProvider.jsx';
 import NoIndex from '../../../components/seo/NoIndex.jsx';
 import { api, setAdminToken } from '../../../services/api.js';
 import { unlockAdminSession } from '../../../utils/adminAuth.js';
 
 export default function AdminLoginPage() {
+  const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = React.useState('');
@@ -42,6 +44,7 @@ export default function AdminLoginPage() {
         const result = await api.requestLoginOtp({ email, password: password || undefined });
         setOtpChallenge(result.challenge);
         setNotice(`OTP sent to ${result.challenge.destination || result.challenge.channel}. It expires in 5 minutes.`);
+        toast.info('OTP sent. It expires in 5 minutes.', 'Check OTP');
         return;
       }
 
@@ -49,12 +52,14 @@ export default function AdminLoginPage() {
       if (result.mfaRequired) {
         setOtpChallenge(result.challenge);
         setNotice(`MFA OTP sent to ${result.challenge.destination || result.challenge.channel}. It expires in 5 minutes.`);
+        toast.info('MFA OTP sent. It expires in 5 minutes.', 'Second step required');
         return;
       }
 
       finishLogin(result);
     } catch (apiError) {
       setError(apiError.message || 'Unable to sign in.');
+      toast.error(apiError, 'Login failed');
     } finally {
       setIsSubmitting(false);
     }

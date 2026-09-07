@@ -1530,6 +1530,103 @@ p {
   font-weight: 900;
 }
 
+.toast-viewport {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 2000;
+  display: grid;
+  width: min(390px, calc(100vw - 32px));
+  gap: 12px;
+  pointer-events: none;
+}
+
+.toast {
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 32px;
+  gap: 12px;
+  align-items: start;
+  padding: 15px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  color: #f7fff8;
+  background:
+    linear-gradient(135deg, rgba(33, 48, 56, 0.96), rgba(12, 28, 25, 0.96)),
+    rgba(15, 28, 30, 0.96);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.32);
+  animation: toastIn 0.24s ease-out both;
+  pointer-events: auto;
+}
+
+.toast strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.toast p {
+  margin: 0;
+  color: rgba(247, 255, 248, 0.78);
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.toast > svg {
+  margin-top: 1px;
+}
+
+.toast button {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.toast-error {
+  border-color: rgba(255, 120, 94, 0.32);
+}
+
+.toast-error > svg {
+  color: #ffb5a5;
+}
+
+.toast-success {
+  border-color: rgba(205, 255, 69, 0.34);
+}
+
+.toast-success > svg {
+  color: var(--accent);
+}
+
+.toast-info {
+  border-color: rgba(147, 205, 255, 0.3);
+}
+
+.toast-info > svg {
+  color: #9ed5ff;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 .payload-preview {
   display: flex;
   gap: 8px;
@@ -2739,6 +2836,20 @@ p {
 }
 
 @media (max-width: 520px) {
+  .toast-viewport {
+    top: auto;
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    width: auto;
+  }
+
+  .toast {
+    grid-template-columns: 22px minmax(0, 1fr) 30px;
+    border-radius: 16px;
+    padding: 13px;
+  }
+
   .public-nav,
   .admin-sidebar,
   .admin-content {

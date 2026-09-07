@@ -1,10 +1,24 @@
 import React from 'react';
 import { SquarePen, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useToast } from '../common/ToastProvider.jsx';
 import { currency } from '../../utils/format.js';
 import PropertyReferenceForm from './PropertyReferenceForm.jsx';
 
 export default function InventoryView({ properties, onCreateProperty, onDeleteProperty }) {
+  const toast = useToast();
+
+  async function handleDelete(property) {
+    if (!window.confirm(`Delete ${property.title}?`)) return;
+
+    try {
+      await onDeleteProperty(property.id);
+      toast.success('Property removed from inventory.', 'Property deleted');
+    } catch (error) {
+      toast.error(error, 'Property could not be deleted');
+    }
+  }
+
   return (
     <section className="inventory-studio">
       <div className="panel property-form">
@@ -30,7 +44,7 @@ export default function InventoryView({ properties, onCreateProperty, onDeletePr
               <Link className="icon-action" aria-label={`Edit ${property.title}`} to={`/admin/properties/${property.id}/edit`}>
                 <SquarePen size={17} />
               </Link>
-              <button type="button" aria-label={`Delete ${property.title}`} onClick={() => window.confirm(`Delete ${property.title}?`) && onDeleteProperty(property.id)}>
+              <button type="button" aria-label={`Delete ${property.title}`} onClick={() => handleDelete(property)}>
                 <Trash2 size={17} />
               </button>
             </div>

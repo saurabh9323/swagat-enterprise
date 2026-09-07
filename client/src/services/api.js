@@ -16,6 +16,30 @@ function resolveApiBaseUrl() {
 const API_BASE_URL = resolveApiBaseUrl();
 const ADMIN_TOKEN_KEY = 'swagat_admin_token';
 
+export class ApiRequestError extends Error {
+  constructor(message, { status, details, path } = {}) {
+    super(message);
+    this.name = 'ApiRequestError';
+    this.status = status;
+    this.details = details;
+    this.path = path;
+  }
+}
+
+function responseMessage(data, fallback) {
+  if (!data) return fallback;
+  if (typeof data.message === 'string' && data.message.trim()) return data.message;
+  if (typeof data.error === 'string' && data.error.trim()) return data.error;
+  if (Array.isArray(data.errors) && data.errors.length) {
+    return data.errors
+      .map((error) => error.message || error.path || String(error))
+      .filter(Boolean)
+      .slice(0, 3)
+      .join(', ');
+  }
+  return fallback;
+}
+
 async function request(path, options = {}) {
   const headers = {
     'Content-Type': 'application/json',
@@ -35,7 +59,11 @@ async function request(path, options = {}) {
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(data?.message || 'API request failed');
+    throw new ApiRequestError(responseMessage(data, 'API request failed'), {
+      status: response.status,
+      details: data,
+      path,
+    });
   }
 
   return data?.data ?? data;

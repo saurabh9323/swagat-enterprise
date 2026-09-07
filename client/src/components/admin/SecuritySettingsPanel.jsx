@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { KeyRound, Save, ShieldCheck } from 'lucide-react';
+import { useToast } from '../common/ToastProvider.jsx';
 import { api } from '../../services/api.js';
 
 const mfaMethods = ['none', 'email_otp', 'sms_otp', 'authenticator'];
@@ -10,6 +11,7 @@ function label(value) {
 }
 
 export default function SecuritySettingsPanel() {
+  const toast = useToast();
   const [user, setUser] = useState(null);
   const [form, setForm] = useState({ mfaEnabled: false, mfaMethod: 'none', otpChannel: 'email' });
   const [message, setMessage] = useState('');
@@ -28,7 +30,10 @@ export default function SecuritySettingsPanel() {
           otpChannel: currentUser.otpChannel || 'email',
         });
       })
-      .catch((error) => setMessage(error.message || 'Could not load security settings.'));
+      .catch((error) => {
+        setMessage(error.message || 'Could not load security settings.');
+        toast.error(error, 'Security settings unavailable');
+      });
 
     return () => {
       cancelled = true;
@@ -52,8 +57,10 @@ export default function SecuritySettingsPanel() {
       await api.updateUser(user.id, payload);
       setForm(payload);
       setMessage('Security settings saved.');
+      toast.success('MFA and OTP settings saved.', 'Security saved');
     } catch (error) {
       setMessage(error.message || 'Security settings could not be saved.');
+      toast.error(error, 'Security settings not saved');
     } finally {
       setSaving(false);
     }

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Pencil, ShieldCheck, UserPlus, UsersRound, X } from 'lucide-react';
+import { useToast } from '../common/ToastProvider.jsx';
 import { api } from '../../services/api.js';
 
 const defaultUser = {
@@ -48,6 +49,7 @@ function userFormValue(user) {
 }
 
 export default function UserManagement() {
+  const toast = useToast();
   const [users, setUsers] = useState([]);
   const [form, setForm] = useState(defaultUser);
   const [editingUser, setEditingUser] = useState(null);
@@ -65,6 +67,7 @@ export default function UserManagement() {
       setError('');
     } catch (apiError) {
       setError(apiError.message || 'Users could not be loaded.');
+      toast.error(apiError, 'Users could not be loaded');
     } finally {
       setLoading(false);
     }
@@ -87,6 +90,7 @@ export default function UserManagement() {
 
     if (!form.name.trim() || !form.email.trim() || (!editingUser && !form.password.trim())) {
       setError(editingUser ? 'Name and email are required.' : 'Name, email and password are required.');
+      toast.error(editingUser ? 'Name and email are required.' : 'Name, email and password are required.', 'User not saved');
       return;
     }
 
@@ -113,15 +117,18 @@ export default function UserManagement() {
         setUsers((current) => current.map((user) => (user.id === editingUser.id ? updated : user)));
         setEditingUser(null);
         setMessage('User updated successfully.');
+        toast.success('User updated successfully.', 'User saved');
       } else {
         const created = await api.createUser(payload);
         setUsers((current) => [created, ...current]);
         setMessage('User created successfully.');
+        toast.success('User created successfully.', 'User saved');
       }
 
       setForm(defaultUser);
     } catch (apiError) {
       setError(apiError.message || `User could not be ${editingUser ? 'updated' : 'created'}.`);
+      toast.error(apiError, `User could not be ${editingUser ? 'updated' : 'created'}`);
     } finally {
       setSaving(false);
     }
@@ -146,8 +153,10 @@ export default function UserManagement() {
       const updated = await api.deleteUser(userId);
       setUsers((current) => current.map((user) => (user.id === userId ? { ...user, ...updated, isActive: false } : user)));
       setMessage('User deactivated.');
+      toast.success('User access has been deactivated.', 'User deactivated');
     } catch (apiError) {
       setError(apiError.message || 'User could not be deactivated.');
+      toast.error(apiError, 'User could not be deactivated');
     }
   }
 

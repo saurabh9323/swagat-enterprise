@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Camera, ImagePlus, IndianRupee, MapPin, Ruler, Save, Star, X } from 'lucide-react';
+import { useToast } from '../common/ToastProvider.jsx';
 import { fileToDataUrl, validatePropertyImage } from '../../utils/images.js';
 
 const defaultForm = {
@@ -58,6 +59,7 @@ function listValue(value) {
 }
 
 export default function PropertyReferenceForm({ initialValue = null, onSubmit, submitLabel = 'Save property reference', compact = false }) {
+  const toast = useToast();
   const initialImages = initialValue?.images?.length
     ? initialValue.images.map((image, index) => ({
         imageUrl: image.imageUrl || image.image_url || image.url || image,
@@ -153,6 +155,7 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
       setError('');
     } catch (imageError) {
       setError(imageError.message);
+      toast.error(imageError, 'Image upload failed');
     } finally {
       event.target.value = '';
     }
@@ -201,11 +204,13 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
 
     if (!form.title.trim() || !form.location.trim()) {
       setError('Title and location are required.');
+      toast.error('Title and location are required.', 'Property not saved');
       return;
     }
 
     if (!numberValue(form.price)) {
       setError('Enter a valid price.');
+      toast.error('Enter a valid price.', 'Property not saved');
       return;
     }
 
@@ -250,8 +255,10 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
       });
 
       if (!initialValue) setForm(defaultForm);
+      toast.success(initialValue ? 'Property reference updated successfully.' : 'Property reference added successfully.', 'Property saved');
     } catch (submitError) {
       setError(submitError.message || 'Property could not be saved.');
+      toast.error(submitError, 'Property could not be saved');
     } finally {
       setSaving(false);
     }

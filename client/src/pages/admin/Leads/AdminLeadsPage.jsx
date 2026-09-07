@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import LeadCaptureForm from '../../../components/admin/LeadCaptureForm.jsx';
 import LeadsPipeline from '../../../components/admin/LeadsPipeline.jsx';
+import { useToast } from '../../../components/common/ToastProvider.jsx';
 
 export default function AdminLeadsPage({ leads, onCreateLead, onUpdateLead, onDeleteLead, onMoveLead }) {
+  const toast = useToast();
   const [editingLead, setEditingLead] = useState(null);
 
   async function handleSubmit(payload) {
@@ -13,6 +15,15 @@ export default function AdminLeadsPage({ leads, onCreateLead, onUpdateLead, onDe
     }
 
     await onCreateLead(payload);
+  }
+
+  async function handleDeleteLead(leadId) {
+    try {
+      await onDeleteLead(leadId);
+      toast.success('Lead removed from the pipeline.', 'Lead deleted');
+    } catch (error) {
+      toast.error(error, 'Lead could not be deleted');
+    }
   }
 
   return (
@@ -26,7 +37,7 @@ export default function AdminLeadsPage({ leads, onCreateLead, onUpdateLead, onDe
           onCancel={editingLead ? () => setEditingLead(null) : null}
         />
       </div>
-      <LeadsPipeline leads={leads} onMoveLead={onMoveLead} onEditLead={setEditingLead} onDeleteLead={onDeleteLead} />
+      <LeadsPipeline leads={leads} onMoveLead={onMoveLead} onEditLead={setEditingLead} onDeleteLead={handleDeleteLead} />
     </section>
   );
 }
