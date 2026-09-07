@@ -49,10 +49,14 @@ export async function generateMetadata({ params }) {
 
 export default async function PropertyDetails({ params }) {
   const { id } = await params;
-  const properties = await fetchPublicProperties();
-  const property = properties.find((item) => item.id === id);
+  const property = await fetchPublicProperty(id);
 
   if (!property) notFound();
+
+  const properties = await fetchPublicProperties();
+  const mergedProperties = properties.some((item) => item.id === property.id)
+    ? properties
+    : [property, ...properties];
 
   return (
     <PublicLayout>
@@ -64,7 +68,7 @@ export default async function PropertyDetails({ params }) {
         ]),
         propertyPageJsonLd(property),
       ]) }} />
-      <PropertyDetailsClient initialProperties={properties} propertyId={id} />
+      <PropertyDetailsClient initialProperties={mergedProperties} propertyId={id} />
     </PublicLayout>
   );
 }

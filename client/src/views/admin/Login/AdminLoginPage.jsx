@@ -129,8 +129,8 @@ export default function AdminLoginPage() {
 
       const result = await api.login({ email, password });
       if (result.mfaRequired) {
-        startOtpChallenge(result.challenge, 'mfa', `MFA OTP sent to ${result.challenge.destination || result.challenge.channel}.`);
-        toast.info('MFA OTP sent. It expires in 5 minutes.', 'Second step required');
+        startOtpChallenge(result.challenge, 'mfa', `Security OTP sent to ${result.challenge.destination || result.challenge.channel}.`);
+        toast.info('Security OTP sent. It expires in 5 minutes.', 'Second step required');
         return;
       }
 
@@ -152,8 +152,8 @@ export default function AdminLoginPage() {
       if (otpSource === 'mfa') {
         const result = await api.login({ email, password });
         if (result.mfaRequired) {
-          startOtpChallenge(result.challenge, 'mfa', `MFA OTP resent to ${result.challenge.destination || result.challenge.channel}.`);
-          toast.info('New MFA OTP sent. It expires in 5 minutes.', 'OTP resent');
+          startOtpChallenge(result.challenge, 'mfa', `Security OTP resent to ${result.challenge.destination || result.challenge.channel}.`);
+          toast.info('New security OTP sent. It expires in 5 minutes.', 'OTP resent');
         } else {
           finishLogin(result);
         }
