@@ -1,22 +1,24 @@
+'use client';
+
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation';
 import PublicNav from '../components/layout/PublicNav.jsx';
 import PublicFooter from '../components/layout/PublicFooter.jsx';
 
-export default function PublicLayout() {
-  const location = useLocation();
+export default function PublicLayout({ children }) {
+  const pathname = usePathname();
 
   React.useEffect(() => {
     window.scrollTo({ left: 0, top: window.scrollY });
     document.documentElement.scrollLeft = 0;
     document.body.scrollLeft = 0;
-  }, [location.pathname]);
+  }, [pathname]);
 
   return (
     <div className="public-app">
       <PublicNav />
       <main className="public-main">
-        <Outlet />
+        {children}
       </main>
       <PublicFooter />
     </div>

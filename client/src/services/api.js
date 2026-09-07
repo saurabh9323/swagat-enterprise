@@ -2,7 +2,11 @@ const LOCAL_API_URL = 'http://localhost:5000/api';
 const PRODUCTION_API_URL = 'https://swagat-enterprise.onrender.com/api';
 
 function resolveApiBaseUrl() {
-  const envApiUrl = import.meta.env.VITE_API_URL?.trim();
+  const envApiUrl = (process.env.NEXT_PUBLIC_API_URL || '').trim();
+  if (typeof window === 'undefined') {
+    return envApiUrl || PRODUCTION_API_URL;
+  }
+
   const hostname = window.location.hostname;
   const isLocalApp = hostname === 'localhost' || hostname === '127.0.0.1';
 
@@ -46,7 +50,7 @@ async function request(path, options = {}) {
     ...options.headers,
   };
 
-  const token = sessionStorage.getItem(ADMIN_TOKEN_KEY);
+  const token = typeof window !== 'undefined' ? sessionStorage.getItem(ADMIN_TOKEN_KEY) : null;
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
@@ -70,14 +74,17 @@ async function request(path, options = {}) {
 }
 
 export function setAdminToken(token) {
+  if (typeof window === 'undefined') return;
   sessionStorage.setItem(ADMIN_TOKEN_KEY, token);
 }
 
 export function clearAdminToken() {
+  if (typeof window === 'undefined') return;
   sessionStorage.removeItem(ADMIN_TOKEN_KEY);
 }
 
 export function hasAdminToken() {
+  if (typeof window === 'undefined') return false;
   return Boolean(sessionStorage.getItem(ADMIN_TOKEN_KEY));
 }
 

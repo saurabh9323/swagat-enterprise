@@ -1,10 +1,12 @@
 import React from 'react';
 import { Menu, X } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { publicNavItems } from '../../constants/business.js';
 import LogoLockup from '../common/LogoLockup.jsx';
 
 export default function PublicNav() {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -38,7 +40,14 @@ export default function PublicNav() {
 
       <nav className={isMenuOpen ? 'open' : ''} aria-label="Public navigation">
         {publicNavItems.map((item) => (
-          <NavLink to={item.href} key={item.href} onClick={closeMenu}>{item.label}</NavLink>
+          <Link
+            className={pathname === item.href ? 'active' : ''}
+            href={item.href}
+            key={item.href}
+            onClick={closeMenu}
+          >
+            {item.label}
+          </Link>
         ))}
       </nav>
     </header>

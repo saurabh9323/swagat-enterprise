@@ -20,9 +20,13 @@ function normalizeSeedLeads() {
   }));
 }
 
-export function usePropertyDesk() {
-  const [properties, setProperties] = useState(initialProperties);
-  const [leads, setLeads] = useState(() => normalizeSeedLeads());
+export function usePropertyDesk(initialData = {}) {
+  const [properties, setProperties] = useState(() => (
+    Array.isArray(initialData.properties) && initialData.properties.length ? initialData.properties : initialProperties
+  ));
+  const [leads, setLeads] = useState(() => (
+    Array.isArray(initialData.leads) && initialData.leads.length ? initialData.leads : normalizeSeedLeads()
+  ));
 
   useEffect(() => {
     let cancelled = false;

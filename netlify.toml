@@ -1,11 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "dist"
+  publish = "client/.next"
 
 [build.environment]
-  VITE_API_URL = "https://swagat-enterprise.onrender.com/api"
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  NEXT_PUBLIC_API_URL = "https://swagat-enterprise.onrender.com/api"

@@ -1,8 +1,9 @@
+'use client';
+
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import AdminHeader from '../components/admin/AdminHeader.jsx';
 import AdminSidebar from '../components/layout/AdminSidebar.jsx';
-import NoIndex from '../components/seo/NoIndex.jsx';
 
 const titles = {
   '/admin': 'Today at Swagat Enterprise',
@@ -13,23 +14,23 @@ const titles = {
   '/admin/settings': 'Admin settings',
 };
 
-export default function AdminLayout({ theme, onAddProperty, onToggleTheme, onSaveTheme }) {
-  const location = useLocation();
-  const title = titles[location.pathname] || (location.pathname.includes('/edit') ? 'Edit property reference' : 'Admin workspace');
+export default function AdminLayout({ theme, onToggleTheme, onSaveTheme, children }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const title = titles[pathname] || (pathname.includes('/edit') ? 'Edit property reference' : 'Admin workspace');
 
   return (
     <main className="admin-app">
-      <NoIndex title={`${title} | Swagat Admin`} />
       <AdminSidebar />
       <section className="admin-content">
         <AdminHeader
           title={title}
           theme={theme}
-          onAddProperty={onAddProperty}
+          onAddProperty={() => router.push('/admin/properties/new')}
           onToggleTheme={onToggleTheme}
           onSaveTheme={onSaveTheme}
         />
-        <Outlet />
+        {children}
       </section>
     </main>
   );

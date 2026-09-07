@@ -1,6 +1,6 @@
 import React from 'react';
 import { Map, MapPin, Plus } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { currency } from '../../utils/format.js';
 import { getPrimaryPropertyImage, getPropertyImages } from '../../utils/propertyImages.js';
 
@@ -33,7 +33,7 @@ export default function PropertyCard({ property, index, onPreview, onLead }) {
           {property.tags.map((tag) => <span key={tag}>{tag}</span>)}
         </div>
         <div className="property-actions">
-          <Link className="secondary-action" to={`/properties/${property.id}`}>View details</Link>
+          <Link className="secondary-action" href={`/properties/${property.id}`}>View details</Link>
           <button className="primary" onClick={() => onLead(property)}>
             <Plus size={18} /> Enquire
           </button>

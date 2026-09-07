@@ -1,14 +1,25 @@
+'use client';
+
 import React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import { hasAdminToken } from '../services/api.js';
 import { isAdminUnlocked } from '../utils/adminAuth.js';
 
-export default function AdminGate() {
-  const location = useLocation();
+export default function AdminGate({ children }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [checked, setChecked] = React.useState(false);
 
-  if (!isAdminUnlocked() || !hasAdminToken()) {
-    return <Navigate to="/admin/login" replace state={{ from: location.pathname }} />;
-  }
+  React.useEffect(() => {
+    if (!isAdminUnlocked() || !hasAdminToken()) {
+      router.replace(`/admin/login?from=${encodeURIComponent(pathname || '/admin')}`);
+      return;
+    }
 
-  return <Outlet />;
+    setChecked(true);
+  }, [pathname, router]);
+
+  if (!checked) return null;
+
+  return children;
 }

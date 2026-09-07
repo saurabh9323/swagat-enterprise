@@ -24,6 +24,7 @@ export const lightTheme = {
 const themeStorageKey = 'swagat_theme_settings';
 
 export function applyTheme(theme) {
+  if (typeof document === 'undefined') return;
   const root = document.documentElement;
   root.dataset.theme = theme.mode;
   root.style.setProperty('--admin-sidebar', theme.sidebarColor);
@@ -36,13 +37,14 @@ export function applyTheme(theme) {
 
 export function useThemeSettings() {
   const [theme, setTheme] = useState(() => {
+    if (typeof window === 'undefined') return defaultTheme;
     const stored = localStorage.getItem(themeStorageKey);
     return stored ? { ...defaultTheme, ...JSON.parse(stored) } : defaultTheme;
   });
 
   useEffect(() => {
     applyTheme(theme);
-    localStorage.setItem(themeStorageKey, JSON.stringify(theme));
+    if (typeof window !== 'undefined') localStorage.setItem(themeStorageKey, JSON.stringify(theme));
   }, [theme]);
 
   useEffect(() => {

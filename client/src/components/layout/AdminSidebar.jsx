@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart3, BriefcaseBusiness, ClipboardList, Home, LayoutDashboard, LogOut, Settings, Users } from 'lucide-react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { adminSections } from '../../constants/business.js';
 import { clearAdminToken } from '../../services/api.js';
 import { lockAdmin } from '../../utils/adminAuth.js';
@@ -16,12 +17,13 @@ const sectionIcons = {
 };
 
 export default function AdminSidebar() {
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
 
   function handleLogout() {
     lockAdmin();
     clearAdminToken();
-    navigate('/admin/login', { replace: true });
+    router.replace('/admin/login');
   }
 
   return (
@@ -29,16 +31,16 @@ export default function AdminSidebar() {
       <LogoLockup href="/admin" icon={<LayoutDashboard size={22} />} title="Swagat Admin" subtitle="Owner desk" />
       <nav aria-label="Admin navigation">
         {adminSections.map((section) => (
-          <NavLink
-            end={section.href === '/admin'}
+          <Link
+            className={pathname === section.href || (section.href !== '/admin' && pathname.startsWith(section.href)) ? 'active' : ''}
             key={section.id}
-            to={section.href}
+            href={section.href}
           >
             {sectionIcons[section.id]} {section.label}
-          </NavLink>
+          </Link>
         ))}
       </nav>
-      <Link className="back-site" to="/"><Home size={17} /> Public site</Link>
+      <Link className="back-site" href="/"><Home size={17} /> Public site</Link>
       <button className="back-site admin-logout" type="button" onClick={handleLogout}><LogOut size={17} /> Lock admin</button>
     </aside>
   );

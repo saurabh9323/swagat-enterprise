@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowRight, BadgeIndianRupee, CheckCircle2, MessageCircle, MapPin, Search, Sparkles, Target } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { owner } from '../../constants/business.js';
 import { whatsappUrl } from '../../utils/format.js';
 
@@ -22,7 +22,7 @@ export default function HeroSection({ selectedProperty }) {
           <a href={whatsappUrl(owner.mobile, message)} target="_blank" rel="noreferrer">
             <MessageCircle size={18} /> WhatsApp now
           </a>
-          <Link to="/properties">
+          <Link href="/properties">
             View listings <ArrowRight size={18} />
           </Link>
         </div>
@@ -33,7 +33,7 @@ export default function HeroSection({ selectedProperty }) {
             <strong>Start with your pocket</strong>
             <span>1 BHK, rentals, shops, resale, near 90 Feet Road</span>
           </div>
-          <Link to="/properties">Explore</Link>
+          <Link href="/properties">Explore</Link>
         </div>
 
         <div className="hero-proof">

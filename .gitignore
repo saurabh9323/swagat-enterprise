@@ -11,7 +11,7 @@ server/.env.*
 client/.env
 client/.env.*
 !server/.env.example
-
+.next
 client/dist/
 *.log
 *.pid

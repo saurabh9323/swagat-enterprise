@@ -11,13 +11,43 @@ export function propertySeo(property) {
   const descriptionAction = property.intent === 'Rent' ? 'available for rent' : 'available for sale';
   const titleIncludesType = property.title.toLowerCase().includes(property.type.toLowerCase());
   const propertyName = titleIncludesType ? property.title : `${property.type} ${property.title}`;
+  const description = propertyDescription(property);
 
   return {
     title: `${propertyName} ${action} in ${property.location} | ${owner.business}`,
-    description: `${property.type} ${descriptionAction} in ${property.location}. View price, area and contact ${owner.business} for enquiries.`,
+    description: description || `${property.type} ${descriptionAction} in ${property.location}. Contact ${owner.business} for enquiries.`,
     image: property.image,
     type: 'article',
   };
+}
+
+export function propertyDescription(property) {
+  const facts = [
+    property.type,
+    property.intent ? `for ${String(property.intent).toLowerCase()}` : '',
+    property.location ? `in ${property.location}` : '',
+  ].filter(Boolean).join(' ');
+  const details = [
+    property.apartmentName ? `Apartment/building: ${property.apartmentName}.` : '',
+    property.area ? `Area: ${property.area} sq.ft.` : '',
+    property.price ? `Price: ${currency(property.price, property.intent)}.` : '',
+    property.status ? `Status: ${property.status}.` : '',
+    property.furnishing ? `Furnishing: ${property.furnishing}.` : '',
+    property.floor ? `Floor: ${property.floor}.` : '',
+    property.walkTime ? `Local note: ${property.walkTime}.` : '',
+  ].filter(Boolean);
+  const features = Array.isArray(property.tags) && property.tags.length
+    ? `Features mentioned for this reference include ${property.tags.slice(0, 6).join(', ')}.`
+    : '';
+  const customDescription = property.description ? `${property.description}` : '';
+
+  return [
+    facts ? `Explore this ${facts} with ${owner.business}.` : '',
+    ...details,
+    features,
+    customDescription,
+    `Contact ${owner.business} to confirm current details and arrange the next step.`,
+  ].filter(Boolean).join(' ');
 }
 
 export function localBusinessJsonLd() {
@@ -74,13 +104,16 @@ export function breadcrumbJsonLd(items) {
 }
 
 export function propertyPageJsonLd(property) {
+  const tags = Array.isArray(property.tags) ? property.tags : [];
+  const description = propertyDescription(property);
+
   return {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     '@id': absoluteUrl(`/properties/${property.id}#webpage`),
     url: absoluteUrl(`/properties/${property.id}`),
     name: propertySeo(property).title,
-    description: propertySeo(property).description,
+    description,
     image: property.image,
     about: {
       '@type': 'Accommodation',
@@ -97,7 +130,7 @@ export function propertyPageJsonLd(property) {
         addressRegion: 'Maharashtra',
         addressCountry: 'IN',
       },
-      amenityFeature: property.tags.map((tag) => ({
+      amenityFeature: tags.map((tag) => ({
         '@type': 'LocationFeatureSpecification',
         name: tag,
       })),
@@ -108,7 +141,7 @@ export function propertyPageJsonLd(property) {
     mainEntity: {
       '@type': 'Thing',
       name: property.title,
-      description: `${property.intent} reference: ${property.type}, ${property.area} sq.ft, ${currency(property.price, property.intent)}.`,
+      description,
     },
   };
 }

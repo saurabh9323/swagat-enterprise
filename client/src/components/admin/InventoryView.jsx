@@ -1,6 +1,6 @@
 import React from 'react';
 import { SquarePen, Trash2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useToast } from '../common/ToastProvider.jsx';
 import { currency } from '../../utils/format.js';
 import PropertyReferenceForm from './PropertyReferenceForm.jsx';
@@ -41,7 +41,7 @@ export default function InventoryView({ properties, onCreateProperty, onDeletePr
               <strong>{property.location}</strong>
               <span>{property.type}</span>
               <span>{currency(property.price, property.intent)}</span>
-              <Link className="icon-action" aria-label={`Edit ${property.title}`} to={`/admin/properties/${property.id}/edit`}>
+              <Link className="icon-action" aria-label={`Edit ${property.title}`} href={`/admin/properties/${property.id}/edit`}>
                 <SquarePen size={17} />
               </Link>
               <button type="button" aria-label={`Delete ${property.title}`} onClick={() => handleDelete(property)}>
