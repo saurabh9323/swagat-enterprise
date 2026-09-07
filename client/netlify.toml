@@ -1,6 +1,10 @@
 [build]
+  base = "client"
   command = "npm run build"
   publish = ".next"
 
 [build.environment]
   NEXT_PUBLIC_API_URL = "https://swagat-enterprise.onrender.com/api"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
