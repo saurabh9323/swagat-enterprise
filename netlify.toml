@@ -1,6 +1,6 @@
 [build]
   command = "npm run build"
-  publish = "client/.next"
+  publish = ".next"
 
 [build.environment]
   NEXT_PUBLIC_API_URL = "https://swagat-enterprise.onrender.com/api"
