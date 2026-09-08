@@ -5,6 +5,10 @@ import HomePage from '../../views/public/Home/HomePage.jsx';
 import { usePropertyDesk } from '../../hooks/usePropertyDesk.js';
 
 export default function HomeClient({ initialProperties }) {
-  const desk = usePropertyDesk({ properties: initialProperties });
+  const desk = usePropertyDesk({
+    properties: initialProperties,
+    refreshOnMount: false,
+    loadLeadsOnMount: false,
+  });
   return <HomePage properties={desk.properties} stats={desk.stats} onLead={desk.addLead} />;
 }

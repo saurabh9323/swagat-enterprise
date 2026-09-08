@@ -1,3 +1,5 @@
+export const fallbackPropertyImage = 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80';
+
 export function getPropertyImages(property) {
   if (!property) return [];
 
@@ -19,5 +21,5 @@ export function getPropertyImages(property) {
 
 export function getPrimaryPropertyImage(property) {
   const images = getPropertyImages(property);
-  return images.find((image) => image.isPrimary)?.imageUrl || images[0]?.imageUrl || property?.image || '';
+  return images.find((image) => image.isPrimary)?.imageUrl || images[0]?.imageUrl || property?.image || fallbackPropertyImage;
 }

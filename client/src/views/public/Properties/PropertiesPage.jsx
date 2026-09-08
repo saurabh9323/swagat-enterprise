@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import PropertyExplorer from '../../../components/public/PropertyExplorer.jsx';
 import SectionTitle from '../../../components/common/SectionTitle.jsx';
 import { Home } from 'lucide-react';
+import ResponsiveImage from '../../../components/common/ResponsiveImage.jsx';
 import { getPrimaryPropertyImage } from '../../../utils/propertyImages.js';
 
 export default function PropertiesPage({ properties, onLead }) {
@@ -15,7 +16,14 @@ export default function PropertiesPage({ properties, onLead }) {
       <SectionTitle icon={<Home size={16} />} eyebrow="Property references" title="Properties in Nalasopara East" level={1} />
       {selectedProperty && (
         <div className="page-highlight">
-          <img src={selectedImage} alt={`${selectedProperty.title} in ${selectedProperty.location}`} loading="eager" />
+          <ResponsiveImage
+            src={selectedImage}
+            alt={`${selectedProperty.title} in ${selectedProperty.location}`}
+            width={960}
+            height={620}
+            priority
+            sizes="(max-width: 820px) 100vw, 52vw"
+          />
           <div>
             <span>{selectedProperty.status}</span>
             <strong>{selectedProperty.title}</strong>

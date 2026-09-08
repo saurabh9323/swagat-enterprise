@@ -2,14 +2,18 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import PublicLayout from '../../../layouts/PublicLayout.jsx';
 import PropertyDetailsClient from '../../../components/public/PropertyDetailsClient.jsx';
-import { fetchPublicProperties, fetchPublicProperty } from '../../../services/serverApi.js';
+import { PUBLIC_DATA_REVALIDATE_SECONDS, fetchPublicProperties, fetchPublicProperty } from '../../../services/serverApi.js';
 import { siteUrl } from '../../../constants/seo.js';
 import { breadcrumbJsonLd, propertyPageJsonLd, propertySeo } from '../../../utils/seo.js';
 import { getPrimaryPropertyImage } from '../../../utils/propertyImages.js';
 
-export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
-export const revalidate = 0;
+export const revalidate = PUBLIC_DATA_REVALIDATE_SECONDS;
+
+export async function generateStaticParams() {
+  const properties = await fetchPublicProperties();
+  return properties.map((property) => ({ id: property.id }));
+}
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -53,11 +57,6 @@ export default async function PropertyDetails({ params }) {
 
   if (!property) notFound();
 
-  const properties = await fetchPublicProperties();
-  const mergedProperties = properties.some((item) => item.id === property.id)
-    ? properties
-    : [property, ...properties];
-
   return (
     <PublicLayout>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([
@@ -68,7 +67,7 @@ export default async function PropertyDetails({ params }) {
         ]),
         propertyPageJsonLd(property),
       ]) }} />
-      <PropertyDetailsClient initialProperties={mergedProperties} propertyId={id} />
+      <PropertyDetailsClient initialProperty={property} propertyId={id} />
     </PublicLayout>
   );
 }

@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowLeft, BadgeIndianRupee, Home, MapPin, MessageCircle, Phone } from 'lucide-react';
 import Link from 'next/link';
+import ResponsiveImage from '../../../components/common/ResponsiveImage.jsx';
 import { owner } from '../../../constants/business.js';
 import { currency, whatsappUrl } from '../../../utils/format.js';
 import { propertyDescription } from '../../../utils/seo.js';
@@ -40,12 +41,25 @@ export default function PropertyDetailsPage({ properties, onLead, propertyId }) 
       <Link className="back-inline" href="/properties"><ArrowLeft size={18} /> Back to properties</Link>
       <div className="detail-grid">
         <div className="detail-gallery">
-          <img src={primaryImage} alt={`${property.title} in ${property.location}`} loading="eager" />
+          <ResponsiveImage
+            src={primaryImage}
+            alt={`${property.title} in ${property.location}`}
+            width={920}
+            height={690}
+            priority
+            sizes="(max-width: 820px) 100vw, 52vw"
+          />
           <div>
             {secondaryImages.map((image, index) => (
               <figure key={`${image.imageUrl}-${index}`}>
-                <img src={image.imageUrl} alt={`${property.title} ${image.imageLabel || `view ${index + 2}`}`} loading="lazy" />
-                <figcaption>{image.imageLabel || `View ${index + 2}`}{image.imageSize ? ` · ${image.imageSize}` : ''}</figcaption>
+                <ResponsiveImage
+                  src={image.imageUrl}
+                  alt={`${property.title} ${image.imageLabel || `view ${index + 2}`}`}
+                  width={360}
+                  height={270}
+                  sizes="(max-width: 820px) 45vw, 12vw"
+                />
+                <figcaption>{image.imageLabel || `View ${index + 2}`}{image.imageSize ? ` - ${image.imageSize}` : ''}</figcaption>
               </figure>
             ))}
           </div>

@@ -1,62 +1,21 @@
 import React, { useMemo, useState } from 'react';
-import { Camera, ImagePlus, IndianRupee, MapPin, Ruler, Save, Star, X } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { useToast } from '../common/ToastProvider.jsx';
 import { fileToDataUrl, validatePropertyImage } from '../../utils/images.js';
-
-const defaultForm = {
-  title: '',
-  description: '',
-  apartmentName: '',
-  location: '',
-  price: '',
-  propertyType: '1 BHK',
-  listingType: 'Sale',
-  area: '',
-  bedrooms: '',
-  bathrooms: '',
-  floor: '',
-  totalFloors: '',
-  furnishing: '',
-  status: 'Fresh',
-  score: '90',
-  commission: '',
-  walkTime: 'Added from Swagat admin panel',
-  latitude: '',
-  longitude: '',
-  tags: 'Admin Added',
-  amenities: 'Admin Added',
-  isActive: true,
-  images: [],
-};
-
-const statuses = ['Fresh', 'Visit Today', 'Negotiable', 'Hot', 'Prime Frontage', 'Owner Direct'];
-const propertyTypes = ['1 RK', '1 BHK', '2 BHK', '3 BHK', 'Shop', 'Office', 'Plot'];
-const listingTypes = ['Sale', 'Rent'];
-const imageLabels = ['Hall', 'Bedroom', 'Kitchen', 'Bathroom', 'Balcony', 'Building', 'Exterior', 'Floor Plan', 'Other'];
-const maxImages = 8;
-
-function formatFileSize(bytes) {
-  if (!bytes) return '';
-  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function numberValue(value) {
-  const cleaned = String(value).replace(/[^0-9.]/g, '');
-  return cleaned ? Number(cleaned) : 0;
-}
-
-function optionalNumber(value) {
-  const cleaned = String(value ?? '').replace(/[^0-9.-]/g, '');
-  return cleaned ? Number(cleaned) : null;
-}
-
-function listValue(value) {
-  return String(value || '')
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
+import PropertyImageUploader from './PropertyImageUploader.jsx';
+import PropertyPayloadPreview from './PropertyPayloadPreview.jsx';
+import {
+  defaultPropertyReferenceForm,
+  formatFileSize,
+  imageLabels,
+  listingTypes,
+  listValue,
+  maxPropertyImages,
+  numberValue,
+  optionalNumber,
+  propertyStatuses,
+  propertyTypes,
+} from './propertyReferenceFormUtils.js';
 
 export default function PropertyReferenceForm({ initialValue = null, onSubmit, submitLabel = 'Save property reference', compact = false }) {
   const toast = useToast();
@@ -80,10 +39,10 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
           imageLabel: 'Hall',
           imageSize: '',
         }]
-      : [];
+    : [];
 
   const [form, setForm] = useState(() => ({
-    ...defaultForm,
+    ...defaultPropertyReferenceForm,
     ...(initialValue ? {
       title: initialValue.title || '',
       description: initialValue.description || '',
@@ -126,8 +85,8 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
     if (!files.length) return;
 
     try {
-      if (form.images.length + files.length > maxImages) {
-        throw new Error(`Upload up to ${maxImages} property images.`);
+      if (form.images.length + files.length > maxPropertyImages) {
+        throw new Error(`Upload up to ${maxPropertyImages} property images.`);
       }
 
       files.forEach(validatePropertyImage);
@@ -254,7 +213,7 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
         amenities: [...new Set([...listValue(form.amenities), form.status, form.images.length ? 'Photo Gallery' : 'Photo Pending'])],
       });
 
-      if (!initialValue) setForm(defaultForm);
+      if (!initialValue) setForm(defaultPropertyReferenceForm);
       toast.success(initialValue ? 'Property reference updated successfully.' : 'Property reference added successfully.', 'Property saved');
     } catch (submitError) {
       setError(submitError.message || 'Property could not be saved.');
@@ -290,7 +249,7 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
         <label>Furnishing<input value={form.furnishing} onChange={(event) => updateField('furnishing', event.target.value)} placeholder="Semi furnished" /></label>
         <label>Status
           <select value={form.status} onChange={(event) => updateField('status', event.target.value)}>
-            {statuses.map((status) => <option key={status} value={status}>{status}</option>)}
+            {propertyStatuses.map((status) => <option key={status} value={status}>{status}</option>)}
           </select>
         </label>
         <label>Score<input value={form.score} onChange={(event) => updateField('score', event.target.value)} placeholder="90" inputMode="numeric" /></label>
@@ -303,40 +262,15 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
         <label className="toggle-field"><input type="checkbox" checked={form.isActive} onChange={(event) => updateField('isActive', event.target.checked)} /> Active listing</label>
       </div>
 
-      <div className="image-upload-card">
-        <label className="image-dropzone">
-          <input type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={handleImageChange} />
-          {primaryImage ? (
-            <img src={primaryImage.imageUrl} alt={`${previewTitle} preview`} />
-          ) : (
-            <span><ImagePlus size={24} /> Upload property images</span>
-          )}
-        </label>
-        <div>
-          <strong><Camera size={16} /> Property photo gallery</strong>
-          <p>{form.images.length ? `${form.images.length} image${form.images.length > 1 ? 's' : ''} selected. First/primary image appears on cards.` : `JPG, PNG or WebP. Select up to ${maxImages}; saved as Base64 for current compatibility.`}</p>
-          <div className="image-thumb-grid">
-            {form.images.map((image, index) => (
-              <figure className={image.isPrimary ? 'is-primary' : ''} key={`${image.imageName}-${index}`}>
-                <img src={image.imageUrl} alt={`${previewTitle} thumbnail ${index + 1}`} />
-                <figcaption>{image.isPrimary ? 'Primary' : `Photo ${index + 1}`}</figcaption>
-                <button type="button" className="thumb-primary" onClick={() => setPrimaryImage(index)} aria-label={`Set image ${index + 1} as primary`}>
-                  <Star size={13} />
-                </button>
-                <button type="button" className="thumb-remove" onClick={() => removeImage(index)} aria-label={`Remove image ${index + 1}`}>
-                  <X size={13} />
-                </button>
-                <div className="image-meta-controls">
-                  <select value={image.imageLabel || 'Other'} onChange={(event) => updateImageMeta(index, 'imageLabel', event.target.value)} aria-label={`Image ${index + 1} label`}>
-                    {imageLabels.map((label) => <option key={label} value={label}>{label}</option>)}
-                  </select>
-                  <input value={image.imageSize || ''} onChange={(event) => updateImageMeta(index, 'imageSize', event.target.value)} placeholder="Size" aria-label={`Image ${index + 1} size`} />
-                </div>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </div>
+      <PropertyImageUploader
+        images={form.images}
+        onImageChange={handleImageChange}
+        onImageMetaChange={updateImageMeta}
+        onRemoveImage={removeImage}
+        onSetPrimaryImage={setPrimaryImage}
+        previewTitle={previewTitle}
+        primaryImage={primaryImage}
+      />
 
       {error && <small className="form-error">{error}</small>}
 
@@ -344,11 +278,7 @@ export default function PropertyReferenceForm({ initialValue = null, onSubmit, s
         <Save size={18} /> {saving ? 'Saving property...' : submitLabel}
       </button>
 
-      <div className="payload-preview" aria-label="Property payload preview">
-        <span><MapPin size={14} /> {form.location || 'Location'}</span>
-        <span><IndianRupee size={14} /> {form.price || 'Price'}</span>
-        <span><Ruler size={14} /> {form.area || 'Area'}</span>
-      </div>
+      <PropertyPayloadPreview area={form.area} location={form.location} price={form.price} />
     </form>
   );
 }

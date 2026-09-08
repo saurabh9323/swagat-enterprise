@@ -3,7 +3,7 @@ import { initialProperties, seedLeads } from '../data/demoData.js';
 import { api } from '../services/api.js';
 import { currency } from '../utils/format.js';
 import { getPortfolioStats } from '../utils/property.js';
-import { getPrimaryPropertyImage, getPropertyImages } from '../utils/propertyImages.js';
+import { fallbackPropertyImage, getPrimaryPropertyImage, getPropertyImages } from '../utils/propertyImages.js';
 
 function initialLeadStatus(lead) {
   if (['New', 'Contacted', 'Visit Booked', 'Negotiation', 'Won', 'Lost'].includes(lead.status)) return lead.status;
@@ -21,6 +21,8 @@ function normalizeSeedLeads() {
 }
 
 export function usePropertyDesk(initialData = {}) {
+  const refreshOnMount = initialData.refreshOnMount ?? true;
+  const loadLeadsOnMount = initialData.loadLeadsOnMount ?? refreshOnMount;
   const [properties, setProperties] = useState(() => (
     Array.isArray(initialData.properties) && initialData.properties.length ? initialData.properties : initialProperties
   ));
@@ -29,34 +31,40 @@ export function usePropertyDesk(initialData = {}) {
   ));
 
   useEffect(() => {
+    if (!refreshOnMount && !loadLeadsOnMount) return undefined;
+
     let cancelled = false;
 
-    api.getProperties()
-      .then((apiProperties) => {
-        if (!cancelled && Array.isArray(apiProperties) && apiProperties.length > 0) {
-          setProperties(apiProperties);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setProperties(initialProperties);
-      });
+    if (refreshOnMount) {
+      api.getProperties()
+        .then((apiProperties) => {
+          if (!cancelled && Array.isArray(apiProperties) && apiProperties.length > 0) {
+            setProperties(apiProperties);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) setProperties(initialProperties);
+        });
+    }
 
-    api.getLeads()
-      .then((apiLeads) => {
-        if (!cancelled && Array.isArray(apiLeads) && apiLeads.length > 0) {
-          setLeads(apiLeads);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setLeads(normalizeSeedLeads());
-        }
-      });
+    if (loadLeadsOnMount) {
+      api.getLeads()
+        .then((apiLeads) => {
+          if (!cancelled && Array.isArray(apiLeads) && apiLeads.length > 0) {
+            setLeads(apiLeads);
+          }
+        })
+        .catch(() => {
+          if (!cancelled) {
+            setLeads(normalizeSeedLeads());
+          }
+        });
+    }
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [loadLeadsOnMount, refreshOnMount]);
 
   const stats = useMemo(() => getPortfolioStats(properties, leads), [properties, leads]);
 
@@ -164,7 +172,7 @@ export function usePropertyDesk(initialData = {}) {
       tags: payload.tags || payload.amenities || [],
       amenities: payload.amenities || payload.tags || [],
       images: getPropertyImages(payload),
-      image: getPrimaryPropertyImage(payload) || 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?auto=format&fit=crop&w=1200&q=80',
+      image: getPrimaryPropertyImage(payload) || fallbackPropertyImage,
     };
 
     setProperties((current) => [localProperty, ...current]);

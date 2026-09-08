@@ -1,9 +1,11 @@
 import React from 'react';
 import PublicLayout from '../layouts/PublicLayout.jsx';
 import HomeClient from '../components/public/HomeClient.jsx';
-import { fetchPublicProperties } from '../services/serverApi.js';
+import { PUBLIC_DATA_REVALIDATE_SECONDS, fetchPublicProperties } from '../services/serverApi.js';
 import { defaultSeo, fallbackSeoImage, siteUrl } from '../constants/seo.js';
 import { localBusinessJsonLd, websiteJsonLd } from '../utils/seo.js';
+
+export const revalidate = PUBLIC_DATA_REVALIDATE_SECONDS;
 
 export const metadata = {
   title: 'Swagat Enterprise | Real Estate in Nalasopara East',

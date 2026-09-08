@@ -1,8 +1,7 @@
 import { siteUrl } from '../constants/seo.js';
-import { fetchPublicProperties } from '../services/serverApi.js';
+import { PUBLIC_DATA_REVALIDATE_SECONDS, fetchPublicProperties } from '../services/serverApi.js';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = PUBLIC_DATA_REVALIDATE_SECONDS;
 
 export default async function sitemap() {
   const now = new Date();

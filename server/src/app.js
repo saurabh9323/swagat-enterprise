@@ -11,6 +11,8 @@ import { settingsRouter } from './routes/settingsRoutes.js';
 import { userRouter } from './routes/userRoutes.js';
 
 const requiredCorsOrigins = [
+  'http://127.0.0.1:3000',
+  'http://localhost:3000',
   'http://127.0.0.1:5173',
   'http://localhost:5173',
   'https://swagat-enterprise.netlify.app',

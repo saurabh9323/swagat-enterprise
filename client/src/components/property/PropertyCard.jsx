@@ -1,6 +1,7 @@
 import React from 'react';
 import { Map, MapPin, Plus } from 'lucide-react';
 import Link from 'next/link';
+import ResponsiveImage from '../common/ResponsiveImage.jsx';
 import { currency } from '../../utils/format.js';
 import { getPrimaryPropertyImage, getPropertyImages } from '../../utils/propertyImages.js';
 
@@ -11,7 +12,13 @@ export default function PropertyCard({ property, index, onPreview, onLead }) {
   return (
     <article className="property-card" style={{ '--delay': `${index * 70}ms` }}>
       <button className="image-button" onClick={() => onPreview(property)} aria-label={`Preview ${property.title}`}>
-        <img src={primaryImage} alt={`${property.title} in ${property.location}`} loading="lazy" />
+        <ResponsiveImage
+          src={primaryImage}
+          alt={`${property.title} in ${property.location}`}
+          width={720}
+          height={533}
+          sizes="(max-width: 700px) 100vw, (max-width: 1180px) 50vw, 33vw"
+        />
         <span>{property.score}% local fit</span>
         {imageCount > 1 && <b>{imageCount} photos</b>}
       </button>

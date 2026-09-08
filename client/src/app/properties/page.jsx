@@ -1,12 +1,11 @@
 import React from 'react';
 import PublicLayout from '../../layouts/PublicLayout.jsx';
 import PropertiesClient from '../../components/public/PropertiesClient.jsx';
-import { fetchPublicProperties } from '../../services/serverApi.js';
+import { PUBLIC_DATA_REVALIDATE_SECONDS, fetchPublicProperties } from '../../services/serverApi.js';
 import { fallbackSeoImage, siteUrl } from '../../constants/seo.js';
 import { breadcrumbJsonLd } from '../../utils/seo.js';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = PUBLIC_DATA_REVALIDATE_SECONDS;
 
 export const metadata = {
   title: 'Properties for Sale & Rent in Nalasopara East | Swagat Enterprise',

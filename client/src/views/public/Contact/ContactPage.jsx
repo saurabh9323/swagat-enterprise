@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import ContactLinks from '../../../components/common/ContactLinks.jsx';

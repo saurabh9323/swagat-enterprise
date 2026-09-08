@@ -63,7 +63,7 @@ The UI now uses small components, demo data is separated from UI, and shared for
 
 ## Tech Stack
 
-- Frontend: React + Vite
+- Frontend: Next.js + React
 - Backend: Node.js + Express
 - Database: PostgreSQL hosted on Supabase
 - Database access: `pg` connection pool
@@ -77,8 +77,8 @@ npm.cmd run install:all
 npm.cmd run dev
 ```
 
-Public site: http://localhost:5173  
-Admin panel: http://localhost:5173/admin  
+Public site: http://localhost:3000  
+Admin panel: http://localhost:3000/admin  
 Backend API: http://localhost:5000/api
 
 ## Configure PostgreSQL
@@ -91,7 +91,7 @@ NODE_ENV=development
 DATABASE_URL=postgresql://...
 JWT_SECRET=replace-with-a-long-random-secret
 JWT_EXPIRES_IN=1h
-CORS_ORIGIN=http://127.0.0.1:5173,http://localhost:5173
+CORS_ORIGIN=http://127.0.0.1:3000,http://localhost:3000
 ```
 
 Run the SQL files in `server/migrations/` against the Supabase PostgreSQL database before using the production API.

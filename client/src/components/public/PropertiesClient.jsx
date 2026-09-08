@@ -5,6 +5,10 @@ import PropertiesPage from '../../views/public/Properties/PropertiesPage.jsx';
 import { usePropertyDesk } from '../../hooks/usePropertyDesk.js';
 
 export default function PropertiesClient({ initialProperties }) {
-  const desk = usePropertyDesk({ properties: initialProperties });
+  const desk = usePropertyDesk({
+    properties: initialProperties,
+    refreshOnMount: false,
+    loadLeadsOnMount: false,
+  });
   return <PropertiesPage properties={desk.properties} onLead={desk.addLead} />;
 }

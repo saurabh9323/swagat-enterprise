@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import { Building2, MapPin, ShieldCheck } from 'lucide-react';
 import SectionTitle from '../../../components/common/SectionTitle.jsx';

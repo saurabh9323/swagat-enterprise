@@ -1,11 +1,14 @@
 import React from 'react';
 import { ArrowRight, BadgeIndianRupee, CheckCircle2, MessageCircle, MapPin, Search, Sparkles, Target } from 'lucide-react';
 import Link from 'next/link';
+import ResponsiveImage from '../common/ResponsiveImage.jsx';
 import { owner } from '../../constants/business.js';
 import { whatsappUrl } from '../../utils/format.js';
+import { getPrimaryPropertyImage } from '../../utils/propertyImages.js';
 
 export default function HeroSection({ selectedProperty }) {
   const message = `Hi, I am looking for property options with ${owner.business}.`;
+  const heroImage = getPrimaryPropertyImage(selectedProperty);
 
   return (
     <section className="public-hero">
@@ -60,7 +63,13 @@ export default function HeroSection({ selectedProperty }) {
           <span>Focus area</span>
           <strong>Nalasopara</strong>
         </div>
-        <img src={selectedProperty.image} alt={`${selectedProperty.title} in ${selectedProperty.location}`} loading="eager" />
+        <ResponsiveImage
+          src={heroImage}
+          alt={`${selectedProperty.title} in ${selectedProperty.location}`}
+          fill
+          priority
+          sizes="(max-width: 820px) 84vw, 40vw"
+        />
         <div className="glass-ticket">
           <span>{selectedProperty.status}</span>
           <strong>{selectedProperty.title}</strong>

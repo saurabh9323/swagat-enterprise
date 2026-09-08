@@ -2,6 +2,7 @@ import { initialProperties } from '../data/demoData.js';
 
 const PRODUCTION_API_URL = 'https://swagat-enterprise.onrender.com/api';
 const PUBLIC_FETCH_TIMEOUT_MS = 8000;
+export const PUBLIC_DATA_REVALIDATE_SECONDS = 60;
 
 export function apiBaseUrl() {
   return (process.env.NEXT_PUBLIC_API_URL || PRODUCTION_API_URL).replace(/\/$/, '');
@@ -17,7 +18,7 @@ function isPublicProperty(property) {
 
 async function fetchFromApi(path) {
   const response = await fetch(`${apiBaseUrl()}${path}`, {
-    cache: 'no-store',
+    next: { revalidate: PUBLIC_DATA_REVALIDATE_SECONDS },
     signal: AbortSignal.timeout(PUBLIC_FETCH_TIMEOUT_MS),
   });
 

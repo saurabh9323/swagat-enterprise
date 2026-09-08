@@ -2745,6 +2745,41 @@ p {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hero-showcase img,
+  .orbit-card,
+  .locality-marquee div,
+  .floating-contact a:last-child,
+  .demand-bar span {
+    animation: none !important;
+  }
+
+  .public-nav nav a:hover,
+  .hero-actions a:hover,
+  .primary:hover,
+  .admin-topbar button:hover,
+  .contact-panel a:hover,
+  .back-site:hover,
+  .metric:hover,
+  .services-band article:hover,
+  .journey-grid article:hover,
+  .property-card:hover,
+  .image-button:hover img,
+  .detail-gallery figure:hover img,
+  .lead-card:hover {
+    transform: none !important;
+  }
+}
+
 @media (max-width: 1180px) {
   .public-hero,
   .office-band,
